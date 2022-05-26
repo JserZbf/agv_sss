@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Modal, Input } from 'antd';
 import { keys } from 'lodash-es';
 
-const EditModal = ({ isAdd, visible, saveModelsState, storeData }) => {
+const AddFrom = ({ isAdd, addFormvisible, saveModelsState, storeData }) => {
   const layout = {
     labelCol: { span: 7 },
     wrapperCol: { span: 14 },
@@ -17,14 +17,14 @@ const EditModal = ({ isAdd, visible, saveModelsState, storeData }) => {
   };
   return (
     <Modal
-      title={isAdd ? '创建数据' : '编辑数据'}
-      visible={visible}
+      title={'创建数据'}
+      visible={addFormvisible}
       getContainer={false}
       onOk={() => {
         form.submit();
       }}
       onCancel={() => {
-        saveModelsState({ visible: false });
+        saveModelsState({ addFormvisible: false });
       }}
     >
       <Form
@@ -32,11 +32,8 @@ const EditModal = ({ isAdd, visible, saveModelsState, storeData }) => {
         {...layout}
         onFinish={onFinish}
       >
-        <Form.Item name="code" label="编码" rules={[{ required: true }]}>
-          <Input autoComplete="off" placeholder="请输入编码" />
-        </Form.Item>
-        <Form.Item name="name" label="名称" rules={[{ required: true }]}>
-          <Input autoComplete="off" placeholder="请输入名称" />
+        <Form.Item name="code" label="动作组名称" rules={[{ required: true }]}>
+          <Input autoComplete="off" placeholder="请输动作组名称" />
         </Form.Item>
         <Form.Item name="description" label="描述">
           <Input autoComplete="off" placeholder="请输入描述" />
@@ -46,4 +43,4 @@ const EditModal = ({ isAdd, visible, saveModelsState, storeData }) => {
   );
 };
 
-export default EditModal;
+export default AddFrom;

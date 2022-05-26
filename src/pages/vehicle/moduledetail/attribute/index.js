@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Form, Popconfirm, Switch, Modal } from 'antd';
+import { Table, Button, Form, Popconfirm, Radio, Modal } from 'antd';
 import MultipleSel from 'components/MultipleSel';
 import AutoScale from 'components/AutoScale';
-import Iconfont from 'components/Iconfont';
+import { Link} from 'umi'
 import { useSelector, useDispatch } from 'dva';
 import BreadcrumbStyle from 'components/breadcrumbStyle';
 import {
@@ -10,48 +10,48 @@ import {
   DeleteOutlined,
   ExclamationCircleOutlined,
   PlusOutlined,
-  SearchOutlined,
-  HeatMapOutlined,
+  VerticalAlignBottomOutlined,
+  DiffOutlined,
 } from '@ant-design/icons';
 import styles from './index.less';
 import ModalFrom from './components/ModalFrom';
 
 const Home = function ({ windowInnerHeight }) {
   const dispatch = useDispatch();
-  const saveModelsState = (payload) => dispatch({ type: 'ruleDetailsModel/save', payload });
-  // const dictPage = (payload) => dispatch({ type: 'ruleDetailsModel/dictPage', payload });
-  // const dictAdd = (payload) => dispatch({ type: 'ruleDetailsModel/dictAdd', payload });
-  // const dictUpdate = (payload) => dispatch({ type: 'ruleDetailsModel/dictUpdate', payload });
-  // const dictDel = (payload) => dispatch({ type: 'ruleDetailsModel/dictDel', payload });
+  const saveModelsState = (payload) => dispatch({ type: 'vehicleAttribute/save', payload });
+  const dictPage = (payload) => dispatch({ type: 'vehicleAttribute/dictPage', payload });
+  // const dictAdd = (payload) => dispatch({ type: 'vehicleModuleList/dictAdd', payload });
+  // const dictUpdate = (payload) => dispatch({ type: 'vehicleModuleList/dictUpdate', payload });
+  // const dictDel = (payload) => dispatch({ type: 'vehicleModuleList/dictDel', payload });
 
   const { isAdd, storeData, visible, params, ruleData } = useSelector(
-    (models) => models.ruleDetailsModel,
+    (models) => models.vehicleAttribute,
   );
 
   const [selectKeys, setSelectKeys] = useState([]);
   const { confirm } = Modal;
   const [selForm] = Form.useForm();
   useEffect(() => {
-    // dictPage();
+    dictPage();
   }, [params]);
 
-  const toTree = (arr, parentId) => {
-    function loop(parentIds) {
-      const res = [];
-      for (let i = 0; i < arr.length; i += 1) {
-        const item = arr[i];
-        if (item.parentId === parentIds) {
-          item.children = loop(item.id);
-          res.push(item);
-        }
-      }
-      return res.length === 0 ? undefined : res;
-    }
-    return loop(parentId);
-  };
-  const tree = toTree(ruleData, '0')?.filter((item) => {
-    return item.layer === 0;
-  });
+  // const toTree = (arr, parentId) => {
+  //   function loop(parentIds) {
+  //     const res = [];
+  //     for (let i = 0; i < arr.length; i += 1) {
+  //       const item = arr[i];
+  //       if (item.parentId === parentIds) {
+  //         item.children = loop(item.id);
+  //         res.push(item);
+  //       }
+  //     }
+  //     return res.length === 0 ? undefined : res;
+  //   }
+  //   return loop(parentId);
+  // };
+  // const tree = toTree(ruleData, '0')?.filter((item) => {
+  //   return item.layer === 0;
+  // });
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
       setSelectKeys(selectedRowKeys);
@@ -65,24 +65,31 @@ const Home = function ({ windowInnerHeight }) {
       onOk() {},
     });
   };
+
   const columns = [
     {
-      title: '编码',
-      dataIndex: 'code',
-      key: 'code',
-      flag: true,
+      title: '序号',
+      render: (text, record, index) => <span>{index+1}</span>,
     },
     {
-      title: '名称',
-      dataIndex: 'name',
-      key: 'name',
-      flag: true,
+      title: '参数编码',
+      dataIndex: 'createTime',
+      key: 'createTime',
     },
-
+    {
+      title: '参数名称',
+      dataIndex: 'updateTime',
+      key: 'updateTime',
+    },
+    {
+      title: '数据类型',
+      dataIndex: 'createTime',
+      key: 'createTime',
+    },
     {
       title: '描述',
-      dataIndex: 'description',
-      key: 'description',
+      dataIndex: 'updateTime',
+      key: 'updateTime',
     },
     {
       title: '操作',
@@ -92,27 +99,6 @@ const Home = function ({ windowInnerHeight }) {
       render: (tex, rec) => {
         return (
           <div className="operate">
-            <Button
-              icon={<HeatMapOutlined />}
-              size="small"
-              className="issuedButton"
-              onClick={() => {
-                saveModelsState({
-                  // isAdd: true,
-                  visible: true,
-                  // storeData: {
-                  //   id: undefined,
-                  //   code: undefined,
-                  //   name: undefined,
-                  //   description: undefined,
-                  //   layer: rec.layer + 1,
-                  //   parentId: rec.id,
-                  // },
-                });
-              }}
-            >
-              添加下级
-            </Button>
             <Button
               icon={<FormOutlined />}
               size="small"
@@ -155,6 +141,7 @@ const Home = function ({ windowInnerHeight }) {
           valueForm[key] = value;
         }
       }
+      console.log(valueForm,'保存数据')
       saveModelsState({
         params: { ...valueForm },
       });
@@ -163,12 +150,16 @@ const Home = function ({ windowInnerHeight }) {
 
   return (
     <div className={styles.container}>
-      <BreadcrumbStyle aheadTitle={[{ title: '基础数据' }]} currentTitle="数据字典表" />
+      <BreadcrumbStyle aheadTitle={[{ title: '模块管理' }, { title: '详情' }]} currentTitle="属性" />
       <div className={styles.middleBox}>
         <div className={styles.middleBoxButton}>
           <div className={styles.listIcon}>
-            <Iconfont iconMode="unicode" type="icon-gold" className="prefixIcon" />
-            数据字典列表
+            <Radio.Group defaultValue="attribute" buttonStyle="solid">   
+              <Radio.Button className={styles.detailtabradio} value="attribute">属性</Radio.Button>
+              <Link to="/vehicle/moduledetail/action">
+                <Radio.Button value="action">动作</Radio.Button>
+              </Link>
+            </Radio.Group>
           </div>
           <div className={styles.buttonFlex}>
             <Button
@@ -183,35 +174,38 @@ const Home = function ({ windowInnerHeight }) {
             >
               新增
             </Button>
+            <Button
+              type="primary"
+              icon={<DiffOutlined />}
+              className="addButton"
+              onClick={() => {
+                saveModelsState({
+                  visible: true,
+                });
+              }}
+            >
+              导入
+            </Button>
+            <Button
+              type="primary"
+              icon={<VerticalAlignBottomOutlined />}
+              className="addButton"
+              onClick={() => {
+                saveModelsState({
+                  visible: true,
+                });
+              }}
+            >
+              模板导出
+            </Button>
           </div>
         </div>
         <p className={styles.splitLine} />
         <div className={styles.tableBox}>
-          <div className={styles.searchForm}>
-            {/* ↓该组件自行实现，现有组件有bug */}
-            <MultipleSel
-              selForm={selForm}
-              columns={columns}
-              selButton={
-                <>
-                  <Button
-                    className="buttonStyle"
-                    type="primary"
-                    onClick={() => {
-                      onFinishSel();
-                    }}
-                    icon={<SearchOutlined />}
-                  >
-                    搜索
-                  </Button>
-                </>
-              }
-            />
-          </div>
           <div className={styles.tableStyles}>
             <Table
               columns={columns}
-              dataSource={tree || []}
+              dataSource={ruleData}
               scroll={{ y: windowInnerHeight - 380 }}
               rowSelection={{ ...rowSelection }}
               rowKey={(record) => record.id}

@@ -31,7 +31,7 @@ export default {
           yield put({
             type: 'getAuthorityMenu',
           });
-          navTo(pathConfig.ruleDetails.path);
+          navTo(pathConfig.vehicle.path);
         } else {
           openNotificationWithIcon('warn', message);
         }

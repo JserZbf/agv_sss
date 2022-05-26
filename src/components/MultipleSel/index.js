@@ -14,6 +14,7 @@ const Remodels = ({ advancedSearch, columns, selForm, selButton }) => {
     const children = [];
     for (let i = 0; i < count; i++) {
       if (searchData[i]?.flag) {
+        console.log(searchData[i],searchData[i]?.showOption)
         const showOptionKey = searchData[i]?.showOption?.key;
         const showOptionContent = searchData[i]?.showOption?.content;
         children.push(

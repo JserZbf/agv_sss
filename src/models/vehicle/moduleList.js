@@ -1,7 +1,7 @@
 
 import {
-    dictPage, dictAdd, dictUpdate, dictDel, dictParent
-} from 'services/basics/ruleDetails';
+    dictPage, dictAdd, dictDel
+} from 'services/vehicle/moduleList';
 import { notification } from 'antd'
 
 const openNotificationWithIcon = (type, title, content) => {
@@ -12,7 +12,7 @@ const openNotificationWithIcon = (type, title, content) => {
 };
 
 export default {
-    namespace: 'ruleDetailsModel',
+    namespace: 'vehicleModuleList',
     state: {
         checkout: true,
         visible: false,
@@ -21,41 +21,17 @@ export default {
         ruleData: [],
         params: {
             current: 1,
-            pageSize: 10000000000
+            pageSize: 10
         },
         storeData: [],
         total: "",
         dictParentData: []
     },
     effects: {
-        *dictParent({ payload }, { call, put, select }) {
-            try {
-                const { code, data, message } = yield call(dictParent, payload);
-                if (code === 200) {
-                    yield put({
-                        type: 'save',
-                        payload: {
-                            dictParentData: data || [],
-                        },
-                    });
-                } else {
-                    openNotificationWithIcon('info', message);
-                    yield put({
-                        type: 'save',
-                        payload: {
-                            dictParentData: [],
-                        },
-                    });
-                }
-
-            } catch (error) { }
-        },
-
         *dictPage({ payload }, { call, put, select }) {
             try {
-                const { params } = yield select((state) => state.ruleDetailsModel);
+                const { params } = yield select((state) => state.vehicleModuleList);
                 const { code, data, message } = yield call(dictPage, { ...params });
-
                 if (code === 200) {
                     yield put({
                         type: 'save',
@@ -93,28 +69,6 @@ export default {
                     openNotificationWithIcon('info', message);
                 }
 
-                yield put({
-                    type: 'save',
-                    payload: {
-                        visible: false,
-                    },
-                });
-                yield put({ type: 'dictPage' });
-            } catch (error) {
-                yield put({
-                    type: 'save',
-                });
-            }
-        },
-        *dictUpdate({ payload }, { call, put }) {
-            try {
-                const { code, data, message } = yield call(dictUpdate, payload);
-
-                if (code === 200) {
-                    openNotificationWithIcon('success', '修改成功');
-                } else {
-                    openNotificationWithIcon('info', message);
-                }
                 yield put({
                     type: 'save',
                     payload: {

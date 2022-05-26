@@ -8,8 +8,8 @@ const Index = ({ aheadTitle, currentTitle }) => {
   return (
     <div className={styles.breadcrumbStyle}>
       <div className={styles.titleIcon}>
-        {/* <ArrowLeftOutlined onClick={() => history.goBack()} /> */}
-        <ArrowLeftOutlined />
+        <ArrowLeftOutlined onClick={() => history.goBack()} />
+        {/* <ArrowLeftOutlined /> */}
       </div>
       <Breadcrumb>
         {aheadTitle.map((item, index) => {
