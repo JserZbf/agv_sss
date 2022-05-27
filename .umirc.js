@@ -1,7 +1,8 @@
 import { resolve } from 'path';
 export const TARGETS = {
   dev: {
-    ems: 'http://172.17.40.64:8002',
+    // ems: 'http://172.17.40.64:8002',
+    ems: 'http://pg.sh-smartstate.com.cn',
   },
 };
 const TARGET = TARGETS[process.env.PROXY_TARGET] || {};
@@ -36,7 +37,7 @@ export default {
   headScripts: [
     // header里面插入script脚本
   ].filter((i) => i),
-  links: [{ rel: 'stylesheet', href: '//at.alicdn.com/t/font_2681856_m3291mzp0mi.css' }],
+  links: [{ rel: 'stylesheet', href: '/iconfont/iconfont.css' }],
   chainWebpack(config) {
     config.resolve.modules.add(resolve(__dirname, './src'));
     config.module
