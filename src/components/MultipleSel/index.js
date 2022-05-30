@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, Select, DatePicker, Row, Col } from 'antd';
-import { UndoOutlined, UpOutlined, DownOutlined } from '@ant-design/icons';
+import { Form, Input, Select, Row, Col, InputNumber } from 'antd';
 import Iconfont from 'components/Iconfont';
 import styles from './index.less';
 
@@ -13,8 +12,7 @@ const Remodels = ({ advancedSearch, columns, selForm, selButton }) => {
     const count = expand ? searchData.length : 3;
     const children = [];
     for (let i = 0; i < count; i++) {
-      if (searchData[i]?.flag) {
-        console.log(searchData[i],searchData[i]?.showOption)
+      if (searchData[i]?.flag) {    
         const showOptionKey = searchData[i]?.showOption?.key;
         const showOptionContent = searchData[i]?.showOption?.content;
         children.push(
@@ -44,13 +42,19 @@ const Remodels = ({ advancedSearch, columns, selForm, selButton }) => {
                 {searchData[i]?.datePicker}
               </Form.Item>
             </Col>
+          ) : searchData[i]?.type ==='number' ? (
+            <Col span={6} style={{ marginBottom: expand ? '10px' : '0px' }} key={i}>
+              <Form.Item label={`${searchData[i]?.title}`} name={`${searchData[i]?.key}`}>
+                <InputNumber placeholder={`请输入${searchData[i]?.title}`} style={{ width: '100%' }} />
+              </Form.Item>
+            </Col>
           ) : (
             <Col span={6} style={{ marginBottom: expand ? '10px' : '0px' }} key={i}>
               <Form.Item label={`${searchData[i]?.title}`} name={`${searchData[i]?.key}`}>
                 <Input placeholder={`请输入${searchData[i]?.title}`} style={{ width: '100%' }} />
               </Form.Item>
             </Col>
-          ),
+          )
         );
       }
     }

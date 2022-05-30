@@ -41,3 +41,6 @@ export const dictgetMapData = (params) => {
 export const dictSetMapData = (params) => {
     return http.post('/api/sss-agv-service/MapData/setMapData', params);
 };
+export const dictAgvModel = (params) => {
+    return http.post('/api/sss-agv-service/AgvModel/getAll',params);
+};

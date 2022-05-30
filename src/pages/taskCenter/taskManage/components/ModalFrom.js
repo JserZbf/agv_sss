@@ -1,20 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Modal, Input, Select } from 'antd';
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { keys } from 'lodash-es';
+import { useSelector, useDispatch } from 'dva';
 
-const EditModal = ({ isAdd, visible, saveModelsState,dictAdd, dictUpdate, storeData, taskStates,dictAgvPosition, agvModelList, agvPositonList }) => {
-  
+const EditModal = ({ saveModelsState, agvModelList, taskTypeList }) => {
+
+  const dispatch = useDispatch();
+  const dictAdd = (payload) => dispatch({ type: 'taskManage/dictAdd', payload });
+  const dictUpdate = (payload) => dispatch({ type: 'taskManage/dictUpdate', payload });
+
+  const { visible, isAdd, storeData, agvPositonList } = useSelector(
+    (models) => models.taskManage,
+  );
   const [form] = Form.useForm();
 
-  const [agvValue, setAgvValue] = useState('')
+  const [startPositionInfo , setStartPositionInfo ] = useState({})
+  const [endPositionInfo , setEndPositionInfo ] = useState({})
 
   useEffect(() => {
     if (isAdd) {
       form.resetFields();
+      form.setFieldsValue({taskType: 'MOVE'})
     } else {
-      console.log(storeData,'数据')
       form.setFieldsValue({...storeData})
+      setStartPositionInfo({
+        value: storeData?.startPositionId,
+        label: storeData?.startPositionName
+      })
+      setEndPositionInfo({
+        value: storeData?.endPositionId,
+        label: storeData?.endPositionName
+      })
     }
   }, [storeData, isAdd]);
 
@@ -24,20 +39,21 @@ const EditModal = ({ isAdd, visible, saveModelsState,dictAdd, dictUpdate, storeD
   };
 
   const onFinish = (value) => {
-    const payload = {
-      ...storeData,
+    let payload = {
       ...value,
-      updateTime: +new Date
+      startPositionId: startPositionInfo.value,
+      endPositionId: endPositionInfo.value,
+      taskCode: storeData?.taskCode
     };
-    console.log(payload,'保存数据')
-    // isAdd ? dictAdd({...payload}) : dictUpdate({...payload})
+    if (!isAdd) {
+      payload = {
+        ...payload,
+        id: storeData?.id,
+        taskCode: storeData?.taskCode
+      }
+    }
+    isAdd ? dictAdd({...payload}) : dictUpdate({...payload})
   };
-
-  const changeAgvValue = (key) => {
-    console.log(key,'key')
-    dictAgvPosition({mapId: key})
-    setAgvValue(key)
-  }
 
   return (
     <Modal
@@ -56,24 +72,18 @@ const EditModal = ({ isAdd, visible, saveModelsState,dictAdd, dictUpdate, storeD
         {...layout}
         onFinish={onFinish}
       >
-        {/* <Form.Item name="taskCode" label="任务编号" rules={[{ required: true }]}>
-          <Input autoComplete="off" placeholder="请输入任务编号" />
-        </Form.Item> */}
-        {/* <Form.Item name="priority" label="任务优先级" rules={[{ required: true }]}>
-          <Input autoComplete="off" placeholder="请输入任务优先级" />
-        </Form.Item> */}
-        {/* <Form.Item name="taskType" label="任务类型" rules={[{ required: true }]}>    
+        <Form.Item name="taskType" label="任务类型" rules={[{ required: true }]}>
           <Select>
-          {
-            taskStates && taskStates.map(item=> {
-              return <Select.Option value={item.key}>{item.value}</Select.Option>
-            })
-          }
+            {
+              taskTypeList && taskTypeList.map(item=> {
+                return <Select.Option value={item.key}>{item.value}</Select.Option>
+              })
+            }
           </Select>
-        </Form.Item> */}
+        </Form.Item>
         
         <Form.Item name="expectedAgvModelId" label="AGV类型" rules={[{ required: true }]}>
-          <Select onSelect={changeAgvValue}>
+          <Select>
             {
               agvModelList && agvModelList.map(item=> {
                 return <Select.Option value={item.key}>{item.value}</Select.Option>
@@ -81,40 +91,37 @@ const EditModal = ({ isAdd, visible, saveModelsState,dictAdd, dictUpdate, storeD
             }
           </Select>
         </Form.Item>
-        {
-          agvValue && <div>
-            <Form.Item name="startPositionId" label="起点" rules={[{ required: true }]}>
-              <Select>
-                {
-                  agvPositonList && agvPositonList.map(item=> {
-                    return <Select.Option value={item.key}>{item.value}</Select.Option>
-                  })
-                }
-              </Select>
-            </Form.Item>
-            <Form.Item name="endPositionId" label="终点" rules={[{ required: true }]}>
-             <Select>
-                {
-                  agvPositonList && agvPositonList.map(item=> {
-                    return <Select.Option value={item.key}>{item.value}</Select.Option>
-                  })
-                }
-              </Select>
-            </Form.Item>
-          </div>
-        }
-        <Form.Item name="priority" label="任务优先级" rules={[{ required: true }]}>
-          <Input autoComplete="off" placeholder="请输入任务优先级" />
-        </Form.Item>
-        {/* <Form.Item name="taskState" label="任务状态" rules={[{ required: true }]}>
-          <Select>
+        <Form.Item label="起点" rules={[{ required: true }]}>
+          <Select value={startPositionInfo} onSelect={(value, info)=>{
+             setStartPositionInfo({
+              value,
+              label: info.children
+            })
+          }}>
             {
-              taskStates && taskStates.map(item=> {
+              agvPositonList && agvPositonList.map(item=> {
                 return <Select.Option value={item.key}>{item.value}</Select.Option>
               })
             }
           </Select>
-        </Form.Item> */}
+        </Form.Item>
+        <Form.Item label="终点" rules={[{ required: true }]}>
+          <Select value={endPositionInfo} onSelect={(value, info)=>{
+             setEndPositionInfo({
+              value,
+              label: info.children
+            })
+          }}>
+            {
+              agvPositonList && agvPositonList.map(item=> {
+                return <Select.Option value={item.key}>{item.value}</Select.Option>
+              })
+            }
+          </Select>
+        </Form.Item>
+        <Form.Item name="priority" label="任务优先级" rules={[{ required: true }]}>
+          <Input autoComplete="off" placeholder="请输入任务优先级" />
+        </Form.Item>
       </Form>
     </Modal>
   );

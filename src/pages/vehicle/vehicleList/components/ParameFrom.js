@@ -1,7 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { Form, Modal, Select, InputNumber } from 'antd';
-const EditModal = ({ isAdd, visible, saveModelsState, dictAdd, storeData }) => {
+import React, { useEffect } from 'react';
+import { Form, Modal, InputNumber } from 'antd';
+import { useSelector, useDispatch } from 'dva';
 
+const ParameFrom = ({ saveModelsState, agvInfo }) => {
+  const dispatch = useDispatch();
+  const dictUpdate = (payload) => dispatch({ type: 'vehicleList/dictUpdate', payload });
+
+  const {  parameVisible } = useSelector(
+    (models) => models.vehicleList,
+  );
   const layout = {
     labelCol: { span: 7 },
     wrapperCol: { span: 14 },
@@ -9,23 +16,32 @@ const EditModal = ({ isAdd, visible, saveModelsState, dictAdd, storeData }) => {
   const [form] = Form.useForm();
   const onFinish = (value) => {
     const payload = {
-      ...value,
-      imageId: 0,
+      acceleration: value.acceleration,
+      agvIp: agvInfo.agvIp,
+      agvModelId: agvInfo.agvModelId,
+      agvName: agvInfo.agvName,
+      agvPrecision: agvInfo.agvPrecision,
+      agvState: agvInfo.agvState,
+      avoidance: agvInfo.avoidance,
+      id: agvInfo.id,
+      lowBatteryStandard: agvInfo.lowBatteryStandard,
+      maxSpeed: value.maxSpeed,
+      taskId: agvInfo.taskId,
+      weight: agvInfo.weight,
     };
-    dictAdd({...payload})
+    dictUpdate({...payload})
   };
-
-
-  const getBase64 = (img, callback)=> {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
-  }
+  useEffect(() => {
+    form.setFieldsValue({
+      acceleration: agvInfo.acceleration,
+      maxSpeed: agvInfo.maxSpeed
+    })
+}, [agvInfo]);
 
   return (
     <Modal
-      title={'挂载地点'}
-      visible={visible}
+      title={'配置信息'}
+      visible={parameVisible}
       getContainer={false}
       onOk={() => {
         form.submit();
@@ -39,19 +55,15 @@ const EditModal = ({ isAdd, visible, saveModelsState, dictAdd, storeData }) => {
         {...layout}
         onFinish={onFinish}
       >
-        <Form.Item name="agvModelName" label="避障等级" rules={[{ required: true }]}>
-          <Select>
-              <Select.Option value="ordinary">普通</Select.Option>
-              <Select.Option value="cache">缓存</Select.Option>
-              <Select.Option value="charging">充电</Select.Option>
-            </Select>
+        <Form.Item name="acceleration" label="AGV加速度" rules={[{ required: true }]}>
+          <InputNumber autoComplete="off" min={0} max={1} placeholder="请输入AGV加速度" />
         </Form.Item>
-        <Form.Item name="agvPrecision" label="速度" rules={[{ required: true }]}>
-          <InputNumber autoComplete="off" placeholder="请输入速度" />
+        <Form.Item name="maxSpeed" label="AGV的最大速度" rules={[{ required: true }]}>
+          <InputNumber autoComplete="off" min={0} max={1} placeholder="请输入AGV最大速度" />
         </Form.Item>
       </Form>
     </Modal>
   );
 };
 
-export default EditModal;
+export default ParameFrom;

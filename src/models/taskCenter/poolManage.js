@@ -1,17 +1,7 @@
 
 import {
-    dictPage,
-    dictAdd,
-    dictDel,
-    dictState,
-    dictAgvModel,
-    dicPositionList,
-    dictMapList,
-    dicMount,
-    dictUpdate,
-    resetAgv,
-    dicUnmount
-} from 'services/vehicle/vehicleList';
+    dictPage, dictDel, dictTaskStates, dictAgvModel, dictMapList, dictTaskType
+} from 'services/taskCenter/poolManage';
 import { notification } from 'antd'
 
 const openNotificationWithIcon = (type, title, content) => {
@@ -20,24 +10,21 @@ const openNotificationWithIcon = (type, title, content) => {
         description: content,
     });
 };
-
 let time
 
 export default {
-    namespace: 'vehicleList',
+    namespace: 'poolManage',
     state: {
-        visible: false,     //新增弹窗展示隐藏
-        mountVisible: false,   // 挂载弹窗
-        parameVisible: false, // 配置弹窗
-        ruleData: [],   // table列表
+        visible: false,
+        ruleData: [],
         params: {
             current: 1,
             pageSize: 10
         },
+        taskStates: [],
+        agvModelList: [],
+        taskTypeList: [],
         stateList: [],  //状态下拉列表
-        agvModelList: [],   // 车辆类型下拉列表
-        agvPositonList: [], //所在节点下拉列表
-        agvInfo: {} //编辑信息
     },
     effects: {
         *dictPage({}, { call, put, select }) {
@@ -45,7 +32,7 @@ export default {
                if (time) {
                 clearTimeout(time)
                }
-                const { params } = yield select((state) => state.vehicleList);
+                const { params } = yield select((state) => state.poolManage);
                 const { code, data, message } = yield call(dictPage, { ...params });
                 if (code === 200) {
                     yield put({
@@ -76,64 +63,6 @@ export default {
                 });
             }
         },
-        *dictState({}, { call, put, select }) {
-            try {
-                const { params } = yield select((state) => state.vehicleList);
-                const { code, data, message } = yield call(dictState, { ...params });
-                if (code === 200) {
-                    const stateList = Object.keys(data).map(item => {
-                        return {
-                            key: data[item],
-                            value: item
-                        }
-                    })
-                    yield put({
-                        type: 'save',
-                        payload: {
-                            stateList: stateList || []
-                        },
-                    });
-                } else {
-                    openNotificationWithIcon('info', message);
-                    yield put({
-                        type: 'save',
-                        payload: {
-                            stateList: []
-                        },
-                    });
-                }
-
-            } catch (error) {
-                yield put({
-                    type: 'save',
-                    payload: {
-                        stateList: [],
-                    },
-                });
-            }
-        },
-        *dictAdd({ payload }, { call, put }) {
-            try {
-                const { code, message } = yield call(dictAdd, payload);
-                if (code === 200) {
-                    openNotificationWithIcon('success', '创建成功');
-                } else {
-                    openNotificationWithIcon('info', message);
-                }
-
-                yield put({
-                    type: 'save',
-                    payload: {
-                        visible: false,
-                    },
-                });
-                yield put({ type: 'dictPage' });
-            } catch (error) {
-                yield put({
-                    type: 'save',
-                });
-            }
-        },
         *dictDel({ payload }, { call, put }) {
             try {
                 const { code, message } = yield call(dictDel, payload);
@@ -150,6 +79,60 @@ export default {
             } catch (error) {
                 yield put({
                     type: 'save',
+                });
+            }
+        },
+        *dicPause({ payload }, { call, put }) {
+            try {
+                const { code, message } = yield call(dicPause, payload);
+                if (code === 200) {
+                    openNotificationWithIcon('success', '已暂停任务');
+                } else {
+                    openNotificationWithIcon('info', message);
+                };
+
+                yield put({
+                    type: 'save',
+                });
+                yield put({ type: 'dictPage' });
+            } catch (error) {
+                yield put({
+                    type: 'save',
+                });
+            }
+        },
+        *dictTaskStates({}, { call, put }) {
+            try {
+                const { code, data, message } = yield call(dictTaskStates);
+                const taskSraresList = Object.keys(data).map(item => {
+                    return {
+                        key: data[item],
+                        value: item
+                    }
+                })
+                if (code === 200) {
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            taskStates: taskSraresList || []
+                        },
+                    });
+                } else {
+                    openNotificationWithIcon('info', message);
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            taskStates: []
+                        },
+                    });
+                }
+
+            } catch (error) {
+                yield put({
+                    type: 'save',
+                    payload: {
+                        taskStates: [],
+                    },
                 });
             }
         },
@@ -189,10 +172,8 @@ export default {
             }
         },
         *dictMapList({}, { call, put }) {
-            
             try {
                 const { code, data, message } = yield call(dictMapList, {current: 1, pageSize: 999});
-                
                 if (code === 200) {      
                     const findUsedMapInfo = data.filter(item=> item.used)
                     if (findUsedMapInfo.length) {
@@ -207,21 +188,20 @@ export default {
 
             } catch (error) {}
         },
-        *dicPositionList({ payload }, { call, put }) {
+        *dictTaskType({}, { call, put }) {
             try {
-                const { code, data, message } = yield call(dicPositionList, {...payload});
-                
-                const agvPositonList = data.map(item => {
+                const { code, data, message } = yield call(dictTaskType);
+                const taskTypeList = Object.keys(data).map(item => {
                     return {
-                        key: item.id,
-                        value: item.positionName
+                        key: data[item],
+                        value: item
                     }
                 })
                 if (code === 200) {
                     yield put({
                         type: 'save',
                         payload: {
-                            agvPositonList: agvPositonList || []
+                            taskTypeList: taskTypeList || []
                         },
                     });
                 } else {
@@ -229,7 +209,36 @@ export default {
                     yield put({
                         type: 'save',
                         payload: {
-                            agvPositonList: agvPositonList || []
+                            taskTypeList: []
+                        },
+                    });
+                }
+
+            } catch (error) {}
+        },
+        *dictState({}, { call, put, select }) {
+            try {
+                const { params } = yield select((state) => state.vehicleList);
+                const { code, data, message } = yield call(dictState, { ...params });
+                if (code === 200) {
+                    const stateList = Object.keys(data).map(item => {
+                        return {
+                            key: data[item],
+                            value: item
+                        }
+                    })
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            stateList: stateList || []
+                        },
+                    });
+                } else {
+                    openNotificationWithIcon('info', message);
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            stateList: []
                         },
                     });
                 }
@@ -238,96 +247,8 @@ export default {
                 yield put({
                     type: 'save',
                     payload: {
-                        agvPositonList: [],
+                        stateList: [],
                     },
-                });
-            }
-        },
-        *dicMount({ payload }, { call, put }) {
-            try {
-                const { code, message } = yield call(dicMount, payload);
-                if (code === 200) {
-                    openNotificationWithIcon('success', '挂载成功');
-                } else {
-                    openNotificationWithIcon('info', message);
-                }
-
-                yield put({
-                    type: 'save',
-                    payload: {
-                        visible: false,
-                    },
-                });
-                yield put({ type: 'dictPage' });
-            } catch (error) {
-                yield put({
-                    type: 'save',
-                });
-            }
-        },
-        *dicUnmount({ payload }, { call, put }) {
-            try {
-                const { code, message } = yield call(dicUnmount, payload);
-                if (code === 200) {
-                    openNotificationWithIcon('success', '退出成功');
-                } else {
-                    openNotificationWithIcon('info', message);
-                }
-
-                yield put({
-                    type: 'save',
-                    payload: {
-                        visible: false,
-                    },
-                });
-                yield put({ type: 'dictPage' });
-            } catch (error) {
-                yield put({
-                    type: 'save',
-                });
-            }
-        },
-        *dictUpdate({ payload }, { call, put }) {
-            try {
-                const { code, message } = yield call(dictUpdate, payload);
-                if (code === 200) {
-                    openNotificationWithIcon('success', '配置成功');
-                } else {
-                    openNotificationWithIcon('info', message);
-                }
-
-                yield put({
-                    type: 'save',
-                    payload: {
-                        parameVisible: false,
-                    },
-                });
-                yield put({ type: 'dictPage' });
-            } catch (error) {
-                yield put({
-                    type: 'save',
-                });
-            }
-        },
-        *resetAgv({ payload }, { call, put }) {
-            try {
-                const { code, message } = yield call(resetAgv, payload);
-                if (code === 200) {
-                    openNotificationWithIcon('success', '复位成功');
-                } else {
-                    openNotificationWithIcon('info', message);
-                }
-
-                yield put({
-                    type: 'save',
-                    payload: {
-                        visible: false,
-                    },
-                });
-                yield put({ type: 'dictPage' });
-            } catch (error) {
-                yield put({
-                    type: 'save',
                 });
             }
         },

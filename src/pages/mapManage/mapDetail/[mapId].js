@@ -26,15 +26,13 @@ const MapDetail = function (props) {
   const saveModelsState = (payload) => dispatch({ type: 'mapDetail/save', payload });
   const dictAdd = (payload) => dispatch({ type: 'mapDetail/dictAdd', payload });
   const dictUpdate = (payload) => dispatch({ type: 'mapDetail/dictUpdate', payload });
-  const dictRelationUpdata = (payload) => dispatch({ type: 'mapDetail/dictRelationUpdata', payload });
   const dictDelete = (payload) => dispatch({ type: 'mapDetail/dictDelete', payload });
   const dictRelationDelete = (payload) => dispatch({ type: 'mapDetail/dictRelationDelete', payload });
-  const dictRelationAdd = (payload) => dispatch({ type: 'mapDetail/dictRelationAdd', payload });
   const dictTreeData = (payload) => dispatch({ type: 'mapDetail/dictTreeData', payload });
-  const dictSetMapData = (payload) => dispatch({ type: 'mapDetail/dictSetMapData', payload });
   const dictgetMapData = (payload) => dispatch({ type: 'mapDetail/dictgetMapData', payload });
+  const dictAgvModel = (payload) => dispatch({ type: 'mapDetail/dictAgvModel', payload });
 
-  const { isAdd, treeInfoFormVisible,mapdata, treeSelectInfo, treeData, drawData , textData} = useSelector(
+  const { treeData, drawData , textData} = useSelector(
     (models) => models.mapDetail,
   );
   
@@ -42,12 +40,15 @@ const MapDetail = function (props) {
   const { mapId } = useParams();
 
   const [backImgUrl, setBackImgUrl] = useState( window.sessionStorage.getItem(mapId))
+  const [expandedKeys, setExpandedKeys] = useState([])
 
   useEffect(() => {
     (async function fn(){
       await dictgetMapData({id: mapId})
       await dictTreeData({mapId})
     })()
+    
+    dictAgvModel()
     
   }, [mapId]);
 
@@ -79,14 +80,31 @@ const MapDetail = function (props) {
     });
   }
 
-  // const uploadProps = {
-  //   accept:'.png,.jpeg',
-  //   action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
-  //   fileList,
-  // };
-
   const saveMapData = () => {   
     drawBoxRef.current.saveDrawList()
+  }
+
+  const exportResult = (text) => {
+    const funDownload = (content, filename)=> {
+      let eleLink = document.createElement('a');
+      eleLink.download = filename;
+      eleLink.style.display = 'none';
+      // 字符内容转变成blob地址
+      const blob = new Blob([content], {
+        type: "application/json;charset=utf-8",
+      });
+      eleLink.href = URL.createObjectURL(blob);
+      // 触发点击
+      document.body.appendChild(eleLink);
+      eleLink.click();
+      // 然后移除
+      document.body.removeChild(eleLink);
+    };
+    if ('download' in document.createElement('a')) {
+        funDownload(text, '导出结果.json');
+    } else {
+        alert('浏览器不支持');
+    }
   }
 
   return (
@@ -94,9 +112,14 @@ const MapDetail = function (props) {
       <BreadcrumbStyle aheadTitle={[{ title: '地图管理' }]} currentTitle="地图详情" />
       <div className={styles.middleBox}>
         <div className={styles.treeBox}>
+          {/* 左侧树形结构 */}
           <Tree
             treeData={treeData}
             blockNode={true}
+            onExpand={(keys)=> {
+              setExpandedKeys(keys)
+            }}
+            expandedKeys={expandedKeys.length ? expandedKeys :  [mapId,'site','node','luxian']}
             titleRender={
               (nodeData)=> {
                 return <div className={styles.treeBoxEditBtn}>
@@ -152,32 +175,7 @@ const MapDetail = function (props) {
                 icon={<UploadOutlined />}
                 className="addButton"
                 onClick={() => {
-                //导出结果
-                function exportResult(text) {
-                    // 下载文件方法
-                    var funDownload = function(content, filename) {
-                        var eleLink = document.createElement('a');
-                        eleLink.download = filename;
-                        eleLink.style.display = 'none';
-                        // 字符内容转变成blob地址
-                        var blob = new Blob([content], {
-                          type: "application/json;charset=utf-8",
-                        });
-                        eleLink.href = URL.createObjectURL(blob);
-                        // 触发点击
-                        document.body.appendChild(eleLink);
-                        eleLink.click();
-                        // 然后移除
-                        document.body.removeChild(eleLink);
-                    };
-                    if ('download' in document.createElement('a')) {
-                        funDownload(text, '导出结果.json');
-                    } else {
-                        alert('浏览器不支持');
-                    }
-                }
-                
-                exportResult(JSON.stringify(textData))
+                  exportResult(JSON.stringify(textData))
                 }}
               >
                 导出地图
@@ -229,13 +227,10 @@ const MapDetail = function (props) {
           </div>
           <DrawBox
             drawData={drawData}
-            mapdata={mapdata}
             ref={drawBoxRef}
             dictRelationDelete={dictRelationDelete}
-            dictRelationAdd={dictRelationAdd}
             saveModelsState={saveModelsState}
             dictDelete={dictDelete}
-            dictSetMapData={dictSetMapData}
             saveMapData={saveMapData}
             backImgUrl={backImgUrl}
             mapId={mapId}
@@ -245,15 +240,11 @@ const MapDetail = function (props) {
 
       <TreeInfoform
         mapId={mapId}
-        isAdd={isAdd}
         nodeData={drawData.nodeList}
         saveModelsState={saveModelsState}
         dictUpdate={dictUpdate}
-        visible={treeInfoFormVisible}
-        treeSelectInfo={treeSelectInfo}
         dictAdd={dictAdd}
         dictTreeData={dictTreeData}
-        dictRelationUpdata={dictRelationUpdata}
       />
     </div>
   );

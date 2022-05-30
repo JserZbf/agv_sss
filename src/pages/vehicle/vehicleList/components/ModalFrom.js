@@ -1,70 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { Form, Modal, Input, Upload, InputNumber } from 'antd';
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { keys } from 'lodash-es';
+import React from 'react';
+import { Form, Modal, Input, InputNumber, Select} from 'antd';
+import { useSelector, useDispatch } from 'dva';
 
-const EditModal = ({ isAdd, visible, saveModelsState, dictAdd, storeData }) => {
+const { TextArea } = Input;
+const layout = {
+  labelCol: { span: 7 },
+  wrapperCol: { span: 14 },
+};
 
-  const [loading, setLoading] = useState('');
-  const [imageUrl, setImageUrl] = useState('');
+const EditModal = ({ saveModelsState, agvModelList, agvPositonList }) => {
+  const dispatch = useDispatch();
+  const dictAdd = (payload) => dispatch({ type: 'vehicleList/dictAdd', payload });
 
-  const layout = {
-    labelCol: { span: 7 },
-    wrapperCol: { span: 14 },
-  };
+  const {  visible } = useSelector(
+    (models) => models.vehicleList,
+  );
+
   const [form] = Form.useForm();
   const onFinish = (value) => {
     const payload = {
       ...value,
-      imageId: 0,
     };
     dictAdd({...payload})
-  };
-  const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div style={{ marginTop: 8 }}>上传</div>
-    </div>
-  );
-
-
-  const getBase64 = (img, callback)=> {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
-  }
-  
-  const beforeUpload = (file)=> {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-    if (!isJpgOrPng) {
-      message.error('You can only upload JPG/PNG file!');
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error('Image must smaller than 2MB!');
-    }
-    return isJpgOrPng && isLt2M;
-  }
-
-  const handleChange = info => {
-    if (info.file.status === 'uploading') {
-      setLoading(true);
-      return;
-    }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, imageUrl =>
-       {
-        setLoading(false)
-        setImageUrl(imageUrl)
-       }
-      );
-    }
   };
 
   return (
     <Modal
-      title={isAdd ? '创建数据' : '编辑数据'}
+      title={'创建数据'}
       visible={visible}
       getContainer={false}
       onOk={() => {
@@ -79,30 +41,50 @@ const EditModal = ({ isAdd, visible, saveModelsState, dictAdd, storeData }) => {
         {...layout}
         onFinish={onFinish}
       >
-        <Form.Item name="agvModelName" label="AGV模型名称" rules={[{ required: true }]}>
-          <Input autoComplete="off" placeholder="请输入AGV模型名称" />
+        <Form.Item name="agvName" label="AGV名称" rules={[{ required: true }]}>
+          <Input autoComplete="off" placeholder="请输入AGV名称" />
         </Form.Item>
-        <Form.Item name="supplierName" label="AGV供应商名称" rules={[{ required: true }]}>
-          <Input autoComplete="off" placeholder="请输入AGV供应商名称" />
+        <Form.Item name="agvModelId" label="车辆类型" placeholder="请选择车辆类型" rules={[{ required: true }]}>
+          <Select>
+            {
+              agvModelList && agvModelList.map(item=> {
+                return <Select.Option value={item.key}>{item.value}</Select.Option>
+              })
+            }
+          </Select>
+        </Form.Item>
+        <Form.Item name="positionId" label="所在节点" rules={[{ required: true }]}>
+          <Select>
+            {
+              agvPositonList && agvPositonList.map(item=> {
+                return <Select.Option value={item.key}>{item.value}</Select.Option>
+              })
+            }
+          </Select>
+        </Form.Item>
+        <Form.Item name="acceleration" label="AGV加速度" rules={[{ required: true }]}>
+          <InputNumber autoComplete="off" min={0} max={1} placeholder="请输入AGV加速度" />
+        </Form.Item>
+        <Form.Item name="agvIp" label="IP地址" rules={[{ required: true }]}>	
+          <Input autoComplete="off" placeholder="请输入IP地址" />
         </Form.Item>
         <Form.Item name="agvPrecision" label="控制精度" rules={[{ required: true }]}>
-          <InputNumber autoComplete="off" placeholder="请输入控制精度" />
+          <InputNumber autoComplete="off" min={0} max={1} placeholder="请输入控制精度" />
         </Form.Item>
         <Form.Item name="lowBatteryStandard" label="AGV低电量标准" rules={[{ required: true }]}>
-          <InputNumber autoComplete="off" placeholder="请输入AGV低电量标准" />
+          <InputNumber autoComplete="off" min={0} max={1} placeholder="请输入AGV低电量标准" />
         </Form.Item>
-        <Form.Item name="description" label="图片" rules={[{ required: true }]}>
-          <Upload
-            name="avatar"
-            listType="picture-card"
-            className="avatar-uploader"
-            showUploadList={false}
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-            beforeUpload={beforeUpload}
-            onChange={handleChange}
-          >
-            {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
-          </Upload>
+        <Form.Item name="weight" label="AGV自重" rules={[{ required: true }]}>
+          <InputNumber autoComplete="off" placeholder="请输入AGV自重"/>
+        </Form.Item>
+        <Form.Item name="maxSpeed" label="AGV的最大速度" rules={[{ required: true }]}>
+          <InputNumber autoComplete="off" min={0} max={1} placeholder="请输入AGV最大速度" />
+        </Form.Item>
+        <Form.Item name="avoidance" label="避障等级" rules={[{ required: true }]}>
+          <InputNumber autoComplete="off" placeholder="请输入避障等级" />
+        </Form.Item>
+        <Form.Item name="agvDescription" label="备注">
+          <TextArea rows={4} placeholder="请输入备注"/>
         </Form.Item>
       </Form>
     </Modal>

@@ -46,6 +46,39 @@ const SideMenuConfig = [
         path: pathConfig.taskManage.path,
         id: pathConfig.taskManage.path,
       },
+      {
+        name: pathConfig.poolManage.name,
+        path: pathConfig.poolManage.path,
+        id: pathConfig.poolManage.path,
+      },
+    ],
+  },
+  // 互联通信中心
+  {
+    name: pathConfig.communication.name,
+    path: pathConfig.communication.path,
+    id: pathConfig.communication.path,
+    icon: pathConfig.communication.icon,
+    children: [
+      {
+        name: pathConfig.positionlManage.name,
+        path: pathConfig.positionlManage.path,
+        id: pathConfig.positionlManage.path,
+      }
+    ],
+  },
+  // 系统中心
+  {
+    name: pathConfig.systemCenter.name,
+    path: pathConfig.systemCenter.path,
+    id: pathConfig.systemCenter.path,
+    icon: pathConfig.systemCenter.icon,
+    children: [
+      {
+        name: pathConfig.systemLog.name,
+        path: pathConfig.systemLog.path,
+        id: pathConfig.systemLog.path,
+      }
     ],
   },
 ];

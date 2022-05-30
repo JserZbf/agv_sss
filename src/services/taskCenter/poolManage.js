@@ -1,20 +1,17 @@
 import http from '../http';
 
 export const dictPage = (params) => {
-    return http.post('/api/sss-agv-service/Task/getAll', params);
+    return http.post('/api/sss-agv-service/RunTimeTask/getAll', params);
 };
-
-export const dictAdd = (params) => {
-    return http.post('/api/sss-agv-service/Task/save', params);
+export const dictDel = (params) => {
+    return http.delete('/api/sss-agv-service/Task/delete', params);
+};
+export const dicPause = (params) => {
+    return http.post('/api/sss-agv-service/Task/pauseTask', params);
 };
 
 export const dictUpdate = (params) => {
     return http.put('/api/sss-agv-service/Task/update', params);
-};
-
-
-export const dictDel = (params) => {
-    return http.delete('/api/sss-agv-service/Task/delete', params);
 };
 
 export const dictTaskStates = () => {
@@ -27,14 +24,6 @@ export const dictAgvModel = (params) => {
 
 export const dictMapList = (params) => {
     return http.get('/api/sss-agv-service/Map/getAll', params);
-};
-
-export const dicPositionList = (params) => {
-    return http.get(`/api/sss-agv-service/Position/getAllByMap/${params.mapId}`);
-};
-
-export const dictIssue = (params) => {
-    return http.put('/api/sss-agv-service/Task/execute',params);
 };
 
 export const dictTaskType = (params) => {

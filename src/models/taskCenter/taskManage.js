@@ -1,6 +1,15 @@
 
 import {
-    dictPage, dictAdd, dictDel, dictTaskStates, dictAgvModel, dictAgvPosition
+    dictPage,
+    dictAdd,
+    dictUpdate,
+    dictDel,
+    dictTaskStates,
+    dictAgvModel,
+    dictMapList,
+    dicPositionList,
+    dictIssue,
+    dictTaskType
 } from 'services/taskCenter/taskManage';
 import { notification } from 'antd'
 
@@ -14,10 +23,8 @@ const openNotificationWithIcon = (type, title, content) => {
 export default {
     namespace: 'taskManage',
     state: {
-        checkout: true,
         visible: false,
         isAdd: true,
-        editId: "",
         ruleData: [],
         params: {
             current: 1,
@@ -27,10 +34,11 @@ export default {
         total: "",
         taskStates: [],
         agvModelList: [],
-        agvPositonList: []
+        agvPositonList: [],
+        taskTypeList: []
     },
     effects: {
-        *dictPage({ payload }, { call, put, select }) {
+        *dictPage({}, { call, put, select }) {
             try {
                 const { params } = yield select((state) => state.taskManage);
                 const { code, data, message } = yield call(dictPage, { ...params });
@@ -84,6 +92,26 @@ export default {
                 });
             }
         },
+        
+        *dictUpdate({ payload }, { call, put }) {
+            try {
+                const { code, message } = yield call(dictUpdate, {...payload});
+                if (code === 200) {
+                    openNotificationWithIcon('success', '修改成功');
+                } else {
+                    openNotificationWithIcon('info', message);
+                };
+
+                yield put({
+                    type: 'save',
+                });
+                yield put({ type: 'dictPage' });
+            } catch (error) {
+                yield put({
+                    type: 'save',
+                });
+            }
+        },
         *dictDel({ payload }, { call, put }) {
             try {
                 const { code, data, message } = yield call(dictDel, payload);
@@ -103,7 +131,7 @@ export default {
                 });
             }
         },
-        *dictTaskStates({ payload }, { call, put }) {
+        *dictTaskStates({}, { call, put }) {
             try {
                 const { code, data, message } = yield call(dictTaskStates);
                 const taskSraresList = Object.keys(data).map(item => {
@@ -138,7 +166,7 @@ export default {
                 });
             }
         },
-        *dictAgvModel({ payload }, { call, put }) {
+        *dictAgvModel({}, { call, put }) {
             try {
                 const { code, data, message } = yield call(dictAgvModel, {current: 1, pageSize: 100});
                 const agvModelList = data?.records.map(item => {
@@ -173,13 +201,31 @@ export default {
                 });
             }
         },
-        *dictAgvPosition({ payload }, { call, put }) {
+        *dictMapList({}, { call, put }) {
             try {
-                const { code, data, message } = yield call(dictAgvPosition, {...payload});
-                const agvPositonList = data?.records.map(item => {
+                const { code, data, message } = yield call(dictMapList, {current: 1, pageSize: 999});
+                if (code === 200) {      
+                    const findUsedMapInfo = data.filter(item=> item.used)
+                    if (findUsedMapInfo.length) {
+                        yield put({type: 'dicPositionList',payload: {
+                            mapId: findUsedMapInfo[0].id,
+                        }});
+                    }
+                    
+                } else {
+                    openNotificationWithIcon('info', message);
+                }
+
+            } catch (error) {}
+        },
+        *dicPositionList({ payload }, { call, put }) {
+            try {
+                const { code, data, message } = yield call(dicPositionList, {...payload});
+
+                const agvPositonList = data.map(item => {
                     return {
                         key: item.id,
-                        value: item.agvModelName
+                        value: item.positionName
                     }
                 })
                 if (code === 200) {
@@ -208,7 +254,53 @@ export default {
                 });
             }
         },
-        
+        *dictIssue({ payload }, { call, put }) {
+            try {
+                const { code, message } = yield call(dictIssue, {...payload});
+                if (code === 200) {
+                    openNotificationWithIcon('success', '修改成功');
+                } else {
+                    openNotificationWithIcon('info', message);
+                };
+
+                yield put({
+                    type: 'save',
+                });
+                yield put({ type: 'dictPage' });
+            } catch (error) {
+                yield put({
+                    type: 'save',
+                });
+            }
+        },
+        *dictTaskType({}, { call, put }) {
+            try {
+                const { code, data, message } = yield call(dictTaskType);
+                const taskTypeList = Object.keys(data).map(item => {
+                    return {
+                        key: data[item],
+                        value: item
+                    }
+                })
+                if (code === 200) {
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            taskTypeList: taskTypeList || []
+                        },
+                    });
+                } else {
+                    openNotificationWithIcon('info', message);
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            taskTypeList: []
+                        },
+                    });
+                }
+
+            } catch (error) {}
+        },
     },
     reducers: {
         save(state, action) {

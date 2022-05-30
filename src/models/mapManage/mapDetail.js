@@ -8,7 +8,8 @@ import {
     dictRelationDelete,
     dictRelationAdd,
     dictSetMapData,
-    dictgetMapData
+    dictgetMapData,
+    dictAgvModel,
 } from 'services/mapManage/mapDetail';
 import { notification } from 'antd';
 
@@ -22,29 +23,23 @@ const openNotificationWithIcon = (type, title, content) => {
 export default {
     namespace: 'mapDetail',
     state: {
-        checkout: true,
         visible: false,
-        treeType: '',
-        treeInfoFormVisible: false,
+        treeInfoFormVisible: false, // 新增节点
         isAdd: true,
-        editId: "",
-        ruleData: [],
         params: {
             current: 1,
             pageSize: 10
         },
-        storeData: [],
-        total: "",
-        dictParentData: [],
-        treeSelectInfo: {},
-        drawData: {
+        treeSelectInfo: {}, // 已选择的树形结构信息
+        drawData: {  // 画布信息
             nodeList: [],
             edgesList: []
         },
-        mapId: '',
-        mapdata: '',
-        treeData: [],
-        textData: {}
+        mapId: '', //地图id
+        mapdata: '', // 地图信息
+        treeData: [], // 树形结构
+        textData: {}, // 导出信息
+        agvModelList: [],   // 车辆类型下拉列表
     },
     effects: {
 
@@ -53,7 +48,7 @@ export default {
 
                 const { mapId } = yield select((state) => state.mapDetail);
 
-                const { code, data, message } = yield call(dictAdd, payload);
+                const { code, message } = yield call(dictAdd, payload);
                 if (code === 200) {
                     openNotificationWithIcon('success', '创建成功');
                 } else {
@@ -253,8 +248,7 @@ export default {
                     yield put({
                         type: 'save',
                         payload: {
-                            ruleData: [],
-                            total: 0,
+                            treeData: []
                         },
                     });
                 }
@@ -262,7 +256,7 @@ export default {
                 yield put({
                     type: 'save',
                     payload: {
-                        ruleData: [],
+                        treeData: [],
                     },
                 });
             }
@@ -382,6 +376,41 @@ export default {
             } catch (error) {
                 yield put({
                     type: 'save',
+                });
+            }
+        },
+        *dictAgvModel({}, { call, put }) {
+            try {
+                const { code, data, message } = yield call(dictAgvModel, {current: 1, pageSize: 100});
+                const agvModelList = data?.records.map(item => {
+                    return {
+                        key: item.id,
+                        value: item.agvModelName
+                    }
+                })
+                if (code === 200) {
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            agvModelList: agvModelList || []
+                        },
+                    });
+                } else {
+                    openNotificationWithIcon('info', message);
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            agvModelList: agvModelList || []
+                        },
+                    });
+                }
+
+            } catch (error) {
+                yield put({
+                    type: 'save',
+                    payload: {
+                        agvModelList: [],
+                    },
                 });
             }
         },

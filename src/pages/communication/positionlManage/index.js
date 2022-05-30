@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Form, Popconfirm } from 'antd';
-import moment from 'moment';
 import MultipleSel from 'components/MultipleSel';
 import AutoScale from 'components/AutoScale';
 import Iconfont from 'components/Iconfont';
@@ -11,24 +10,25 @@ import {
   DeleteOutlined,
   PlusOutlined,
   SearchOutlined,
-  RetweetOutlined
 } from '@ant-design/icons';
 import styles from './index.less';
 import ModalFrom from './components/ModalFrom';
 
 const Home = function () {
   const dispatch = useDispatch();
-  const saveModelsState = (payload) => dispatch({ type: 'taskManage/save', payload });
-  const dictPage = (payload) => dispatch({ type: 'taskManage/dictPage', payload });
-  const dictDel = (payload) => dispatch({ type: 'taskManage/dictDel', payload });
-  const dictTaskStates = (payload) => dispatch({ type: 'taskManage/dictTaskStates', payload });
-  const dictAgvModel = (payload) => dispatch({ type: 'taskManage/dictAgvModel', payload });
-  const dictMapList = (payload) => dispatch({ type: 'taskManage/dictMapList', payload });
-  const dictIssue = (payload) => dispatch({ type: 'taskManage/dictIssue', payload });
-  const dictTaskType = (payload) => dispatch({ type: 'taskManage/dictTaskType', payload });
+  const saveModelsState = (payload) => dispatch({ type: 'positionlManage/save', payload });
+  const dictPage = (payload) => dispatch({ type: 'positionlManage/dictPage', payload });
+  const dictAdd = (payload) => dispatch({ type: 'positionlManage/dictAdd', payload });
+  const dictUpdate = (payload) => dispatch({ type: 'positionlManage/dictUpdate', payload });
+  const dictDel = (payload) => dispatch({ type: 'positionlManage/dictDel', payload });
+  const dictTaskStates = (payload) => dispatch({ type: 'positionlManage/dictTaskStates', payload });
+  const dictAgvModel = (payload) => dispatch({ type: 'positionlManage/dictAgvModel', payload });
+  const dictMapList = (payload) => dispatch({ type: 'positionlManage/dictMapList', payload });
+  const dictIssue = (payload) => dispatch({ type: 'positionlManage/dictIssue', payload });
+  const dictTaskType = (payload) => dispatch({ type: 'positionlManage/dictTaskType', payload });
 
-  const { params, ruleData, taskStates, agvModelList, taskTypeList } = useSelector(
-    (models) => models.taskManage,
+  const { isAdd, storeData, visible, params, ruleData, taskStates, agvModelList, taskTypeList, agvPositonList } = useSelector(
+    (models) => models.positionlManage,
   );
   const [selectKeys, setSelectKeys] = useState([]);
 
@@ -42,9 +42,19 @@ const Home = function () {
   }, [params]);
 
   const rowSelection = {
-    onChange: (selectedRowKeys) => {
+    onChange: (selectedRowKeys, selectedRows) => {
       setSelectKeys(selectedRowKeys);
     },
+  };
+
+  const showConfirm = () => {
+    confirm({
+      title: '是否删除？',
+      icon: <ExclamationCircleOutlined />,
+      onOk() {
+        console.log(selectKeys)
+      },
+    });
   };
 
   const columns = [
@@ -56,7 +66,7 @@ const Home = function () {
       fixed: 'left',
     },
     {
-      title: '任务编号',
+      title: '设备',
       dataIndex: 'taskCode',
       key: 'taskCode',
       width: 200,
@@ -64,18 +74,16 @@ const Home = function () {
       fixed: 'left',
     },
     {
-      title: '优先级',
+      title: '描述',
       dataIndex: 'priority',
       key: 'priority',
       width: 100,
-      flag: true,
       type: 'number'
     },
     {
-      title: '任务类型',
+      title: '点位',
       dataIndex: 'taskType',
       key: 'taskType',
-      flag: true,
       width: 100,
       render: (text) =>{
         const showState = taskTypeList.find(item=> text === item.key)
@@ -88,19 +96,19 @@ const Home = function () {
       data: taskTypeList
     },
     {
-      title: '起点',
+      title: '数据类型',
       dataIndex: 'startPositionName',
       key: 'startPositionName',
       width: 200,
     },
     {
-      title: '终点',
+      title: '期望值',
       dataIndex: 'endPositionName',
       key: 'endPositionName',
       width: 200,
     },
     {
-      title: 'AGV类型',
+      title: '当前值',
       dataIndex: 'expectedAgvModelId',
       key: 'expectedAgvModelId',
       width: 150,
@@ -115,7 +123,7 @@ const Home = function () {
       data: agvModelList
     },
     {
-      title: '任务状态',
+      title: '数据流向',
       dataIndex: 'taskState',
       key: 'taskState',
       flag: true,
@@ -131,19 +139,6 @@ const Home = function () {
       data: taskStates
     },
     {
-      title: '创建人',
-      dataIndex: 'createUser',
-      width: 100,
-      key: 'createUser'
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      key: 'createTime',
-      width: 150,
-      render: text =><span>{moment(text).format('YYYY-MM-DD')}</span>,
-    },
-    {
       title: '操作',
       dataIndex: 'address',
       align: 'center',
@@ -152,8 +147,7 @@ const Home = function () {
       render: (tex, rec) => {
         return (
           <div className="operate">
-            {
-              rec.taskState !== 'FINISHED' && <Button
+             <Button
               icon={<FormOutlined />}
               size="small"
               className="editButton"
@@ -169,7 +163,6 @@ const Home = function () {
             >
               修改
             </Button> 
-            }
             <Popconfirm
               title="是否删除？"
               okText="确定"
@@ -204,12 +197,12 @@ const Home = function () {
 
   return (
     <div className={styles.container}>
-      <BreadcrumbStyle aheadTitle={[{ title: '任务中心' }]} currentTitle="任务管理" />
+      <BreadcrumbStyle aheadTitle={[{ title: '互联通信' }]} currentTitle="交互点位配置" />
       <div className={styles.middleBox}>
         <div className={styles.middleBoxButton}>
           <div className={styles.listIcon}>
             <Iconfont iconMode="unicode" type="icon-gold" className="prefixIcon" />
-            任务管理列表
+            交互点位配置列表
           </div>
           <div className={styles.buttonFlex}>
             <Button
@@ -226,16 +219,6 @@ const Home = function () {
             >
               新增
             </Button>
-            <Button
-              type="primary"
-              icon={<RetweetOutlined />}
-              className="addButton"
-              onClick={() => {
-                dictIssue({ ids: selectKeys });
-              }}
-            >
-              下发
-            </Button>
           </div>
         </div>
         <p className={styles.splitLine} />
@@ -245,7 +228,6 @@ const Home = function () {
             <MultipleSel
               selForm={selForm}
               columns={columns}
-              advancedSearch={true}
               selButton={
                 <>
                   <Button
@@ -275,8 +257,14 @@ const Home = function () {
       </div>
       <ModalFrom
         saveModelsState={saveModelsState}
+        dictAdd={dictAdd}
+        dictUpdate={dictUpdate}
         taskStates={taskStates}
+        visible={visible}
+        isAdd={isAdd}
+        storeData={storeData}
         agvModelList={agvModelList}
+        agvPositonList={agvPositonList}
         dictMapList={dictMapList}
         taskTypeList={taskTypeList}
       />

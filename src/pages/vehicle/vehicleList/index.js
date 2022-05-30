@@ -1,66 +1,40 @@
 import React, { useEffect } from 'react';
-import { Card, Button, Form, List } from 'antd';
-import { Link} from 'umi';
-import moment from 'moment';
+import { Button, Form, Row, Col } from 'antd';
 import MultipleSel from 'components/MultipleSel';
 import AutoScale from 'components/AutoScale';
-import Iconfont from 'components/Iconfont';
 import { useSelector, useDispatch } from 'dva';
 import BreadcrumbStyle from 'components/breadcrumbStyle';
 import {
-  DeploymentUnitOutlined,
-  LoginOutlined,
-  EditOutlined,
-  RedoOutlined,
   PlusOutlined,
   SearchOutlined,
-  DeleteOutlined
 } from '@ant-design/icons';
 import styles from './index.less';
 import ModalFrom from './components/ModalFrom';
 import MountFrom from './components/MountFrom';
 import ParameFrom from './components/ParameFrom';
+import CardItem from './components/CardItem';
 
-const Home = function ({ windowInnerHeight }) {
+const Home = function () {
   const dispatch = useDispatch();
   const saveModelsState = (payload) => dispatch({ type: 'vehicleList/save', payload });
   const dictPage = (payload) => dispatch({ type: 'vehicleList/dictPage', payload });
   const dictState = (payload) => dispatch({ type: 'vehicleList/dictState', payload });
-  const dictAdd = (payload) => dispatch({ type: 'vehicleList/dictAdd', payload });
-  const dictDel = (payload) => dispatch({ type: 'vehicleList/dictDel', payload });
+  const dictAgvModel = (payload) => dispatch({ type: 'vehicleList/dictAgvModel', payload });
+  const dictMapList = (payload) => dispatch({ type: 'vehicleList/dictMapList', payload });
 
-  const { isAdd, storeData, visible, params, mountVisible,parameVisible, ruleData, stateList } = useSelector(
+  const {  params, ruleData, agvModelList, agvPositonList, agvInfo } = useSelector(
     (models) => models.vehicleList,
   );
 
-  const dataKey = [{
-    key: 'agvName',
-    value: '车辆编码'
-  },{
-    key: 'type',
-    value: '车辆类型'
-  },{
-    key: 'agvState',
-    value: '状态'
-  },{
-    key: 'lowBatteryStandard',
-    value: '电量'
-  },{
-    key: 'maxSpeed',
-    value: '速度'
-  },{
-    key: 'positionId',
-    value: '所在点'
-  }];
-
   const [selForm] = Form.useForm();
   useEffect(() => {
-    console.log(dictState,'ioioio')
     dictPage();
   }, [params]);
 
   useEffect(() => {
     dictState()
+    dictAgvModel()
+    dictMapList()
   }, []);
 
   const searchData = [
@@ -73,14 +47,14 @@ const Home = function ({ windowInnerHeight }) {
     
     {
       title: '车辆类型',
-      dataIndex: 'supplierName',
-      key: 'supplierName',
+      dataIndex: 'agvModelId',
+      key: 'agvModelId',
       flag: true,
       showOption:{
         key: 'key',
         content: 'value'
       },
-      data: stateList
+      data: agvModelList
     }
   ];
 
@@ -103,8 +77,6 @@ const Home = function ({ windowInnerHeight }) {
       <BreadcrumbStyle aheadTitle={[{ title: '车辆中心' }]} currentTitle="车辆管理" />
       <div className={styles.middleBox}>
         <div className={styles.middleBoxButton}>
-          <div className={styles.listIcon}>
-          </div>
           <div className={styles.buttonFlex}>
             <Button
               type="primary"
@@ -145,64 +117,39 @@ const Home = function ({ windowInnerHeight }) {
           </div>
           <p className={styles.splitLine} />
           <div className={styles.cardStyles}>
+          <Row justify="start" gutter={16}>
             {
               ruleData.map((item, index)=> {
-                return <div className={styles.cardItemsStyles}>
-                   <Card
-                    title={`站台${index + 1}`}
-                    headStyle={{background: '#6290fa', borderRadius: '20px 20px 0 0', color: '#fff'}}
-                    style={{borderRadius: '20px'}}
-                      actions={[
-                        <div onClick={()=>{
-                            saveModelsState({
-                              mountVisible: true,
-                            });}
-                        } className={styles.cardItemsMount}><DeploymentUnitOutlined />挂载</div>,
-                        <div className={styles.cardItemsOut}><LoginOutlined />退出</div>,
-                        <div className={styles.cardItemsReset}><RedoOutlined />复位</div>,
-                        <div onClick={()=>{
-                          saveModelsState({
-                            parameVisible: true,
-                          });}
-                         } className={styles.cardItemsEdit}><EditOutlined />配置</div>,
-                        <div className={styles.cardItemsDelete}><DeleteOutlined />删除</div>,
-                      ]}
-                    >
-                      <List
-                        bordered={false}
-                        size={'small'}
-                        dataSource={dataKey}
-                        renderItem={list => (
-                          <List.Item>
-                            <div style={{display: 'flex',width: '100%', justifyContent: 'space-between'}}>
-                              <span className={styles.listItemTitle}>{list['value']}:</span> {item[list['key']]}
-                            </div>
-                          </List.Item>
-                        )}
-                      />
-                    </Card>
+                return <Col span={7}>
+                  <div className={styles.cardItemsStyles}>
+                    <CardItem
+                      item={item}
+                      index={index}
+                      saveModelsState={saveModelsState}
+                      agvModelList={agvModelList}
+                    />
                   </div>
+                </Col>  
                 })
             }
+          </Row>
+            
           </div>
         </div>
       </div>
       <ModalFrom
         saveModelsState={saveModelsState}
-        dictAdd={dictAdd}
-        visible={visible}
-        isAdd={isAdd}
-        storeData={storeData}
+        agvModelList={agvModelList}
+        agvPositonList={agvPositonList}
       />
        <MountFrom
         saveModelsState={saveModelsState}
-        dictAdd={dictAdd}
-        visible={mountVisible}
+        agvPositonList={agvPositonList}
+        agvInfo={agvInfo}
       />
       <ParameFrom
         saveModelsState={saveModelsState}
-        dictAdd={dictAdd}
-        visible={parameVisible}
+        agvInfo={agvInfo}
       />
     </div>
   );

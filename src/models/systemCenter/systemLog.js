@@ -1,7 +1,7 @@
 
 import {
-    dictPage, dictAdd, dictDel
-} from 'services/vehicle/moduleList';
+    dictPage, dictTaskStates
+} from 'services/systemCenter/systemLog';
 import { notification } from 'antd'
 
 const openNotificationWithIcon = (type, title, content) => {
@@ -12,25 +12,19 @@ const openNotificationWithIcon = (type, title, content) => {
 };
 
 export default {
-    namespace: 'vehicleModuleList',
+    namespace: 'systemLog',
     state: {
-        checkout: true,
-        visible: false,
-        isAdd: true,
-        editId: "",
         ruleData: [],
         params: {
             current: 1,
             pageSize: 10
         },
-        storeData: [],
-        total: "",
-        dictParentData: []
+        taskStates: [],
     },
     effects: {
         *dictPage({}, { call, put, select }) {
             try {
-                const { params } = yield select((state) => state.vehicleModuleList);
+                const { params } = yield select((state) => state.taskManage);
                 const { code, data, message } = yield call(dictPage, { ...params });
                 if (code === 200) {
                     yield put({
@@ -60,44 +54,38 @@ export default {
                 });
             }
         },
-        *dictAdd({ payload }, { call, put }) {
+        *dictTaskStates({}, { call, put }) {
             try {
-                const { code, message } = yield call(dictAdd, payload);
+                const { code, data, message } = yield call(dictTaskStates);
+                const taskSraresList = Object.keys(data).map(item => {
+                    return {
+                        key: data[item],
+                        value: item
+                    }
+                })
                 if (code === 200) {
-                    openNotificationWithIcon('success', '创建成功');
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            taskStates: taskSraresList || []
+                        },
+                    });
                 } else {
                     openNotificationWithIcon('info', message);
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            taskStates: []
+                        },
+                    });
                 }
 
+            } catch (error) {
                 yield put({
                     type: 'save',
                     payload: {
-                        visible: false,
+                        taskStates: [],
                     },
-                });
-                yield put({ type: 'dictPage' });
-            } catch (error) {
-                yield put({
-                    type: 'save',
-                });
-            }
-        },
-        *dictDel({ payload }, { call, put }) {
-            try {
-                const { code, message } = yield call(dictDel, payload);
-                if (code === 200) {
-                    openNotificationWithIcon('success', '删除成功');
-                } else {
-                    openNotificationWithIcon('info', message);
-                };
-
-                yield put({
-                    type: 'save',
-                });
-                yield put({ type: 'dictPage' });
-            } catch (error) {
-                yield put({
-                    type: 'save',
                 });
             }
         },

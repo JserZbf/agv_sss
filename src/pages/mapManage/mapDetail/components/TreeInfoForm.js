@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Drawer, Input, Select, Button, InputNumber } from 'antd';
+import { useSelector, useDispatch } from 'dva';
 
 const EditModal = ({
-  isAdd,
   mapId,
   dictAdd,
   dictUpdate,
-  treeSelectInfo, 
-  visible,
   saveModelsState,
-  nodeData,
-  dictRelationUpdata
+  nodeData,  
 }) => {
 
   const layout = {
@@ -19,8 +16,18 @@ const EditModal = ({
   };
   const [form] = Form.useForm();
 
+
+  const dispatch = useDispatch();
+  const dictRelationUpdata = (payload) => dispatch({ type: 'mapDetail/dictRelationUpdata', payload });
+
+  const { isAdd, treeSelectInfo, treeInfoFormVisible, agvModelList } = useSelector(
+    (models) => models.mapDetail,
+  ); 
+
+  
   const [startPositionName, setStartPositionName] = useState('')
   const [endPositionName, setEndPositionName] = useState('')
+
 
   useEffect(() => {
     if (isAdd) {
@@ -44,7 +51,7 @@ const EditModal = ({
       || treeSelectInfo.hierarchy === 'node') {
        payload = {
         ...value,
-        agvModelIds: treeSelectInfo.agvModelIds || [],
+        agvModelIds: typeof(value.agvModelIds)=='string' ? [value.agvModelIds] : value.agvModelIds,
         closed: true,
         mapId: mapId,
         operationsWhenEnd: treeSelectInfo.operationsWhenEnd || [],
@@ -52,7 +59,6 @@ const EditModal = ({
         operationsWhenStart: treeSelectInfo.operationsWhenStart || [],
         id: treeSelectInfo.id
       };
-      console.log(payload)
       isAdd ? dictAdd({...payload}) : dictUpdate({...payload}) 
     } else if (treeSelectInfo.hierarchy === 'path') {
       payload = {
@@ -103,13 +109,14 @@ const EditModal = ({
   return (
     <Drawer
       title={getDrawerTitle()}
-      placement="right"
+      placement="right"   
+      width={420}
       onClose={()=>{saveModelsState({treeInfoFormVisible: false})}}
-      visible={visible}
+      visible={treeInfoFormVisible}
       footer={
-        <div className='draw_box_footer'>
-          <Button size='large' style={{width: '50%'}} onClick={()=>{saveModelsState({treeInfoFormVisible: false})}}>取消</Button>
-          <Button size='large' style={{width: '50%'}} type="primary" onClick={()=>{ form.submit() }}>
+        <div className='draw_box_footer' style={{float: 'right'}}>
+          <Button size='large' style={{marginRight: '10px'}} onClick={()=>{saveModelsState({treeInfoFormVisible: false})}}>取消</Button>
+          <Button size='large' type="primary" onClick={()=>{ form.submit() }}>
             确认
           </Button>
         </div>
@@ -123,7 +130,6 @@ const EditModal = ({
         <Form.Item label="类型" rules={[{ required: true }]}>
           <div>{getTreeData()}</div>
         </Form.Item>
-        {console.log(treeSelectInfo)}
         {
           (treeSelectInfo.canAdd || treeSelectInfo.hierarchy === 'site' || treeSelectInfo.hierarchy === 'node') && <div>
             
@@ -157,11 +163,15 @@ const EditModal = ({
               }
              
             </Form.Item>
-            {/* <Form.Item name="agvModelIds" label="车辆类型" >
+            <Form.Item name="agvModelIds" label="车辆类型" rules={[{ required: true }]}>
               <Select>
-                <Select.Option value="ordinary">普通</Select.Option>
+                {
+                  agvModelList && agvModelList.map((item)=> {
+                    return <Select.Option value={item.key}>{item.value}</Select.Option>
+                  })
+                } 
               </Select>
-            </Form.Item>   */}
+            </Form.Item>  
           </div>
         }
         {

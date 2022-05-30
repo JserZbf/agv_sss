@@ -1,31 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Form, Modal, Select } from 'antd';
-const EditModal = ({ isAdd, visible, saveModelsState, dictAdd, storeData }) => {
+import { useSelector, useDispatch } from 'dva';
+
+const MountFrom = ({saveModelsState, agvPositonList, agvInfo }) => {
+  const dispatch = useDispatch();
+  const dicMount = (payload) => dispatch({ type: 'vehicleList/dicMount', payload });
+  const {  mountVisible } = useSelector(
+    (models) => models.vehicleList,
+  );
 
   const layout = {
     labelCol: { span: 7 },
     wrapperCol: { span: 14 },
   };
+
+  useEffect(() => {
+      form.setFieldsValue({positionId: agvInfo.positionId})
+  }, [agvInfo]);
+
   const [form] = Form.useForm();
   const onFinish = (value) => {
     const payload = {
       ...value,
-      imageId: 0,
+      agvId: agvInfo.id
     };
-    dictAdd({...payload})
+    dicMount({...payload})
   };
-
-
-  const getBase64 = (img, callback)=> {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
-  }
 
   return (
     <Modal
-      title={'挂载地点'}
-      visible={visible}
+      title='挂载地点'
+      visible={mountVisible}
       getContainer={false}
       onOk={() => {
         form.submit();
@@ -39,16 +44,18 @@ const EditModal = ({ isAdd, visible, saveModelsState, dictAdd, storeData }) => {
         {...layout}
         onFinish={onFinish}
       >
-        <Form.Item name="agvModelName" label="挂载地点" rules={[{ required: true }]}>
-          <Select>
-              <Select.Option value="ordinary">普通</Select.Option>
-              <Select.Option value="cache">缓存</Select.Option>
-              <Select.Option value="charging">充电</Select.Option>
-            </Select>
+        <Form.Item name="positionId" label="挂载地点" rules={[{ required: true }]}>
+         <Select>
+            {
+              agvPositonList && agvPositonList.map(item=> {
+                return <Select.Option value={item.key}>{item.value}</Select.Option>
+              })
+            }
+          </Select>
         </Form.Item>
       </Form>
     </Modal>
   );
 };
 
-export default EditModal;
+export default MountFrom;

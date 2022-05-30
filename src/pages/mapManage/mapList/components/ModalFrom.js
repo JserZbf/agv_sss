@@ -1,7 +1,17 @@
 import React, { useEffect } from 'react';
-import { Form, Modal, Input, Radio } from 'antd';
+import { Form, Modal, Input } from 'antd';
+import { useSelector, useDispatch } from 'dva';
 
-const EditModal = ({ isAdd, visible, saveModelsState,dictAdd, dictUpdate, storeData }) => {
+const EditModal = ({ saveModelsState }) => {
+
+  const dispatch = useDispatch();  
+  const dictAdd = (payload) => dispatch({ type: 'mapList/dictAdd', payload });
+  const dictUpdate = (payload) => dispatch({ type: 'mapList/dictUpdate', payload });
+
+  const {  isAdd, visible, storeData } = useSelector(
+    (models) => models.mapList,
+  );
+
   
   const [form] = Form.useForm();
 
@@ -12,7 +22,7 @@ const EditModal = ({ isAdd, visible, saveModelsState,dictAdd, dictUpdate, storeD
     } else {
       const checkValue = {
         ...storeData,
-        used: !!storeData.used
+        used: !!storeData?.used
       }
       form.setFieldsValue({...checkValue})
     }

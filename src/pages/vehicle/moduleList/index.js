@@ -20,25 +20,16 @@ const Home = function ({ windowInnerHeight }) {
   const dispatch = useDispatch();
   const saveModelsState = (payload) => dispatch({ type: 'vehicleModuleList/save', payload });
   const dictPage = (payload) => dispatch({ type: 'vehicleModuleList/dictPage', payload });
-  const dictAdd = (payload) => dispatch({ type: 'vehicleModuleList/dictAdd', payload });
   const dictDel = (payload) => dispatch({ type: 'vehicleModuleList/dictDel', payload });
 
-  const { isAdd, storeData, visible, params, ruleData } = useSelector(
+  const { storeData, params, ruleData } = useSelector(
     (models) => models.vehicleModuleList,
   );
-
-  // const [selectKeys, setSelectKeys] = useState([]);
 
   const [selForm] = Form.useForm();
   useEffect(() => {
     dictPage();
   }, [params]);
-
-  // const rowSelection = {
-  //   onChange: (selectedRowKeys, selectedRows) => {
-  //     setSelectKeys(selectedRowKeys);
-  //   },
-  // };
 
   const searchData = [
     {
@@ -178,27 +169,13 @@ const Home = function ({ windowInnerHeight }) {
               columns={columns}
               dataSource={ruleData}
               scroll={{ y: windowInnerHeight - 380 }}
-              // rowSelection={{ ...rowSelection }}
               rowKey={(record) => record.id}
             />
-            {/* <Button
-              type="primary"
-              className={styles.paginationStyle}
-              icon={<DeleteOutlined />}
-              onClick={showConfirm}
-              disabled={!selectKeys?.length}
-            >
-              批量删除
-            </Button> */}
           </div>
         </div>
       </div>
       <ModalFrom
         saveModelsState={saveModelsState}
-        dictAdd={dictAdd}
-        visible={visible}
-        isAdd={isAdd}
-        storeData={storeData}
       />
     </div>
   );

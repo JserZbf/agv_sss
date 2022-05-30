@@ -1,10 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Form, Modal, Input, Upload, InputNumber } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { keys } from 'lodash-es';
+import { useSelector, useDispatch } from 'dva';
 
-const EditModal = ({ isAdd, visible, saveModelsState, dictAdd, storeData }) => {
+const EditModal = ({ saveModelsState }) => {
 
+  const dispatch = useDispatch();
+  const dictAdd = (payload) => dispatch({ type: 'vehicleModuleList/dictAdd', payload });
+
+  const { visible, isAdd } = useSelector(
+    (models) => models.vehicleModuleList,
+  );
+
+
+  const [lowBatteryStandard, setLowBatteryStandard] = useState();
   const [loading, setLoading] = useState('');
   const [imageUrl, setImageUrl] = useState('');
 
@@ -16,7 +25,8 @@ const EditModal = ({ isAdd, visible, saveModelsState, dictAdd, storeData }) => {
   const onFinish = (value) => {
     const payload = {
       ...value,
-      imageId: 0,
+      lowBatteryStandard,
+      imageId: 1,
     };
     dictAdd({...payload})
   };
@@ -88,8 +98,16 @@ const EditModal = ({ isAdd, visible, saveModelsState, dictAdd, storeData }) => {
         <Form.Item name="agvPrecision" label="控制精度" rules={[{ required: true }]}>
           <InputNumber autoComplete="off" placeholder="请输入控制精度" min={0} max={1}/>
         </Form.Item>
-        <Form.Item name="lowBatteryStandard" label="AGV低电量标准" rules={[{ required: true }]}>
-          <InputNumber autoComplete="off" placeholder="请输入AGV低电量标准" />
+        <Form.Item label="AGV低电量标准" rules={[{ required: true }]}  >
+          <InputNumber autoComplete="off" onPressEnter={(value)=> {
+              if ( 0 < value && value <= 1) {
+                setLowBatteryStandard(value)
+              }
+            }}
+            min={0} max={1}
+            value={lowBatteryStandard}
+            placeholder="请输入AGV低电量标准"
+          />
         </Form.Item>
         {/* <Form.Item name="description" label="图片" rules={[{ required: true }]}>
           <Upload

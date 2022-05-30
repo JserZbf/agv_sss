@@ -54,6 +54,28 @@ export default {
     path: '/taskCenter/taskManage',
     icon: 'icon-renwuzhongxin',
   },
+  poolManage: {
+    name: '任务池',
+    path: '/taskCenter/poolManage',
+  },
+  communication: {
+    name: '互联通信',
+    path: '/communication',
+    icon: 'icon-tongxunlu',
+  },
+  positionlManage: {
+    name: '交互点位配置',
+    path: '/communication/positionlManage',
+  },
+  systemCenter: {
+    name: '系统中心',
+    path: '/systemCenter',
+    icon: 'icon-xitong',
+  },
+  systemLog: {
+    name: '系统日志',
+    path: '/systemCenter/systemLog'
+  },
   default: {
     path: '/vehicle/moduleList',
   },

@@ -14,31 +14,28 @@ const openNotificationWithIcon = (type, title, content) => {
 export default {
     namespace: 'mapList',
     state: {
-        checkout: true,
         visible: false,
         isAdd: true,
-        editId: "",
         ruleData: [],
         params: {
             current: 1,
             pageSize: 10
         },
         storeData: [],
-        total: "",
-        dictParentData: []
+        total: ""
     },
     effects: {
 
-        *dictPage({ payload }, { call, put, select }) {
+        *dictPage({}, { call, put, select }) {
             try {
-                const { params } = yield select((state) => state.vehicleModuleList);
-                const { code, data, message } = yield call(dictPage, {  });
+                const { params } = yield select((state) => state.mapList);
+
+                const { code, data, message } = yield call(dictPage, { ...params });
                 if (code === 200) {
                     yield put({
                         type: 'save',
                         payload: {
-                            ruleData: data|| [],
-                            total: 1,
+                            ruleData: data || []
                         },
                     });
                 } else {
@@ -46,8 +43,7 @@ export default {
                     yield put({
                         type: 'save',
                         payload: {
-                            ruleData: [],
-                            total: 0,
+                            ruleData: []
                         },
                     });
                 }
@@ -63,7 +59,7 @@ export default {
         },
         *dictAdd({ payload }, { call, put }) {
             try {
-                const { code, data, message } = yield call(dictAdd, payload);
+                const { code, message } = yield call(dictAdd, payload);
                 if (code === 200) {
                     openNotificationWithIcon('success', '创建成功');
                 } else {
@@ -85,7 +81,7 @@ export default {
         },
         *dictUpdate({ payload }, { call, put }) {
             try {
-                const { code, data, message } = yield call(dictUpdate, payload);
+                const { code, message } = yield call(dictUpdate, payload);
 
                 if (code === 200) {
                     openNotificationWithIcon('success', '修改成功');
@@ -107,7 +103,7 @@ export default {
         },
         *dictDel({ payload }, { call, put }) {
             try {
-                const { code, data, message } = yield call(dictDel, payload);
+                const { code, message } = yield call(dictDel, payload);
                 if (code === 200) {
                     openNotificationWithIcon('success', '删除成功');
                 } else {
@@ -126,7 +122,7 @@ export default {
         },
         *dictUpState({ payload }, { call, put }) {
             try {
-                const { code, data, message } = yield call(dictUpState, payload);
+                const { code, message } = yield call(dictUpState, payload);
 
                 if (code === 200) {
                     openNotificationWithIcon('success', '修改成功');
