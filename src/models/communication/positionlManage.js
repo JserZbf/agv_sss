@@ -31,9 +31,9 @@ export default {
         taskTypeList: []
     },
     effects: {
-        *dictPage({ payload }, { call, put, select }) {
+        *dictPage({}, { call, put, select }) {
             try {
-                const { params } = yield select((state) => state.taskManage);
+                const { params } = yield select((state) => state.positionlManage);
                 const { code, data, message } = yield call(dictPage, { ...params });
                 if (code === 200) {
                     yield put({
@@ -65,7 +65,7 @@ export default {
         },
         *dictAdd({ payload }, { call, put }) {
             try {
-                const { code, data, message } = yield call(dictAdd, payload);
+                const { code, message } = yield call(dictAdd, payload);
                 if (code === 200) {
                     openNotificationWithIcon('success', '创建成功');
                 } else {
@@ -107,7 +107,7 @@ export default {
         },
         *dictDel({ payload }, { call, put }) {
             try {
-                const { code, data, message } = yield call(dictDel, payload);
+                const { code, message } = yield call(dictDel, payload);
                 if (code === 200) {
                     openNotificationWithIcon('success', '删除成功');
                 } else {
@@ -124,7 +124,7 @@ export default {
                 });
             }
         },
-        *dictTaskStates({ payload }, { call, put }) {
+        *dictTaskStates({}, { call, put }) {
             try {
                 const { code, data, message } = yield call(dictTaskStates);
                 const taskSraresList = Object.keys(data).map(item => {
@@ -159,7 +159,7 @@ export default {
                 });
             }
         },
-        *dictAgvModel({ payload }, { call, put }) {
+        *dictAgvModel({}, { call, put }) {
             try {
                 const { code, data, message } = yield call(dictAgvModel, {current: 1, pageSize: 100});
                 const agvModelList = data?.records.map(item => {
@@ -194,7 +194,7 @@ export default {
                 });
             }
         },
-        *dictMapList({ payload }, { call, put }) {
+        *dictMapList({}, { call, put }) {
             try {
                 const { code, data, message } = yield call(dictMapList, {current: 1, pageSize: 999});
                 if (code === 200) {      
@@ -266,7 +266,7 @@ export default {
                 });
             }
         },
-        *dictTaskType({ payload }, { call, put }) {
+        *dictTaskType({}, { call, put }) {
             try {
                 const { code, data, message } = yield call(dictTaskType);
                 const taskTypeList = Object.keys(data).map(item => {

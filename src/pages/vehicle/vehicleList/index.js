@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
 import { Button, Form, Row, Col } from 'antd';
-import MultipleSel from 'components/MultipleSel';
+import SearchSel from 'components/SearchSel';
 import AutoScale from 'components/AutoScale';
 import { useSelector, useDispatch } from 'dva';
 import BreadcrumbStyle from 'components/breadcrumbStyle';
 import {
-  PlusOutlined,
-  SearchOutlined,
+  PlusOutlined
 } from '@ant-design/icons';
 import styles from './index.less';
 import ModalFrom from './components/ModalFrom';
@@ -50,6 +49,7 @@ const Home = function () {
       dataIndex: 'agvModelId',
       key: 'agvModelId',
       flag: true,
+      type: 'select',
       showOption:{
         key: 'key',
         content: 'value'
@@ -95,24 +95,10 @@ const Home = function () {
         <p className={styles.splitLine} />
         <div className={styles.tableBox}>
           <div className={styles.searchForm}>
-            {/* ↓该组件自行实现，现有组件有bug */}
-            <MultipleSel
+            <SearchSel
               selForm={selForm}
               columns={searchData}
-              selButton={
-                <>
-                  <Button
-                    className="buttonStyle"
-                    type="primary"
-                    onClick={() => {
-                      onFinishSel();
-                    }}
-                    icon={<SearchOutlined />}
-                  >
-                    搜索
-                  </Button>
-                </>
-              }
+              onFinishSel={onFinishSel}
             />
           </div>
           <p className={styles.splitLine} />

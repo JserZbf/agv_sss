@@ -3,7 +3,7 @@ import { Table, Button, Popconfirm, Switch, Form } from 'antd';
 import { Link} from 'umi';
 import moment from 'moment';
 import AutoScale from 'components/AutoScale';
-import MultipleSel from 'components/MultipleSel';
+import SearchSel from 'components/SearchSel';
 import { useSelector, useDispatch } from 'dva';
 import BreadcrumbStyle from 'components/breadcrumbStyle';
 import {
@@ -12,8 +12,7 @@ import {
   PlusOutlined,
   DiffOutlined,
   CheckOutlined,
-  CloseOutlined,
-  SearchOutlined
+  CloseOutlined
 } from '@ant-design/icons';
 import styles from './index.less';
 import ModalFrom from './components/ModalFrom';
@@ -171,23 +170,10 @@ const MapList = function ({ windowInnerHeight }) {
         <p className={styles.splitLine} />
         <div className={styles.tableBox}>
           <div className={styles.searchForm}>
-            <MultipleSel
+            <SearchSel
               selForm={selForm}
               columns={columns}
-              selButton={
-                <>
-                  <Button
-                    className="buttonStyle"
-                    type="primary"
-                    onClick={() => {
-                      onFinishSel();
-                    }}
-                    icon={<SearchOutlined />}
-                  >
-                    搜索
-                  </Button>
-                </>
-              }
+              onFinishSel={onFinishSel}
             />
           </div>
           <div className={styles.tableStyles}>

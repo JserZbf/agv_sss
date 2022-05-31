@@ -1,13 +1,12 @@
 import React, { useEffect } from 'react';
 import { Table, Button, Form } from 'antd';
-import MultipleSel from 'components/MultipleSel';
+import SearchSel from 'components/SearchSel';
 import AutoScale from 'components/AutoScale';
 import Iconfont from 'components/Iconfont';
 import { useSelector, useDispatch } from 'dva';
 import BreadcrumbStyle from 'components/breadcrumbStyle';
 import {
-  PlusOutlined,
-  SearchOutlined,
+  PlusOutlined
 } from '@ant-design/icons';
 import styles from './index.less';
 
@@ -33,7 +32,6 @@ const Home = function () {
       render: (text, record, index) => <span>{index + 1}</span>,
       width: 100,  
       dataIndex: 'index',
-      fixed: 'left',
     },
     {
       title: '时间',
@@ -41,14 +39,15 @@ const Home = function () {
       key: 'taskCode',
       width: 200,
       flag: true,
-      fixed: 'left',
+      type: 'datePicker',
     },
     {
       title: '类型',
-      dataIndex: 'startPositionName',
-      key: 'startPositionName',
+      dataIndex: 'agvStateType',
+      key: 'agvStateType',
       width: 200,
       flag: true,
+      type: 'select',
       render: (text) =>{
         const showState = taskStates.find(item=> text === item.key)
         return showState?.value
@@ -60,9 +59,15 @@ const Home = function () {
       data: taskStates
     },
     {
+      title: '名称',
+      dataIndex: 'agvName',
+      key: 'agvName',
+      width: 200,
+    },
+    {
       title: '详细描述',
-      dataIndex: 'endPositionName',
-      key: 'endPositionName',
+      dataIndex: 'agvStateRecordDescription',
+      key: 'agvStateRecordDescription',
       width: 200,
     }
   ];
@@ -110,24 +115,10 @@ const Home = function () {
         <p className={styles.splitLine} />
         <div className={styles.tableBox}>
           <div className={styles.searchForm}>
-            {/* ↓该组件自行实现，现有组件有bug */}
-            <MultipleSel
+            <SearchSel
               selForm={selForm}
               columns={columns}
-              selButton={
-                <>
-                  <Button
-                    className="buttonStyle"
-                    type="primary"
-                    onClick={() => {
-                      onFinishSel();
-                    }}
-                    icon={<SearchOutlined />}
-                  >
-                    搜索
-                  </Button>
-                </>
-              }
+              onFinishSel={onFinishSel}
             />
           </div>
           <div className={styles.tableStyles}>

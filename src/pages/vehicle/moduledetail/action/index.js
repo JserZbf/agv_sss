@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Form, Popconfirm, Radio, Modal } from 'antd';
-import MultipleSel from 'components/MultipleSel';
 import AutoScale from 'components/AutoScale';
 import { Link} from 'umi'
 import { useSelector, useDispatch } from 'dva';
@@ -9,9 +8,7 @@ import {
   FormOutlined,
   DeleteOutlined,
   ExclamationCircleOutlined,
-  PlusOutlined,
-  SearchOutlined,
-  HeatMapOutlined,
+  PlusOutlined
 } from '@ant-design/icons';
 import styles from './index.less';
 import ModalFrom from './components/ModalFrom';

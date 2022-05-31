@@ -24,7 +24,7 @@ export default {
     effects: {
         *dictPage({}, { call, put, select }) {
             try {
-                const { params } = yield select((state) => state.taskManage);
+                const { params } = yield select((state) => state.systemLog);
                 const { code, data, message } = yield call(dictPage, { ...params });
                 if (code === 200) {
                     yield put({

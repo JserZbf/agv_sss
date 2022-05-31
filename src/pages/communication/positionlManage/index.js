@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Table, Button, Form, Popconfirm } from 'antd';
-import MultipleSel from 'components/MultipleSel';
+import SearchSel from 'components/SearchSel';
 import AutoScale from 'components/AutoScale';
 import Iconfont from 'components/Iconfont';
 import { useSelector, useDispatch } from 'dva';
@@ -9,7 +9,6 @@ import {
   FormOutlined,
   DeleteOutlined,
   PlusOutlined,
-  SearchOutlined,
 } from '@ant-design/icons';
 import styles from './index.less';
 import ModalFrom from './components/ModalFrom';
@@ -24,13 +23,11 @@ const Home = function () {
   const dictTaskStates = (payload) => dispatch({ type: 'positionlManage/dictTaskStates', payload });
   const dictAgvModel = (payload) => dispatch({ type: 'positionlManage/dictAgvModel', payload });
   const dictMapList = (payload) => dispatch({ type: 'positionlManage/dictMapList', payload });
-  const dictIssue = (payload) => dispatch({ type: 'positionlManage/dictIssue', payload });
   const dictTaskType = (payload) => dispatch({ type: 'positionlManage/dictTaskType', payload });
 
   const { isAdd, storeData, visible, params, ruleData, taskStates, agvModelList, taskTypeList, agvPositonList } = useSelector(
     (models) => models.positionlManage,
   );
-  const [selectKeys, setSelectKeys] = useState([]);
 
   const [selForm] = Form.useForm();
   useEffect(() => {
@@ -41,21 +38,6 @@ const Home = function () {
     dictMapList()
   }, [params]);
 
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      setSelectKeys(selectedRowKeys);
-    },
-  };
-
-  const showConfirm = () => {
-    confirm({
-      title: '是否删除？',
-      icon: <ExclamationCircleOutlined />,
-      onOk() {
-        console.log(selectKeys)
-      },
-    });
-  };
 
   const columns = [
     {
@@ -128,6 +110,7 @@ const Home = function () {
       key: 'taskState',
       flag: true,
       width: 100,
+      type: 'select',
       render: (text) =>{
         const showState = taskStates.find(item=> text === item.key)
         return showState?.value
@@ -225,23 +208,10 @@ const Home = function () {
         <div className={styles.tableBox}>
           <div className={styles.searchForm}>
             {/* ↓该组件自行实现，现有组件有bug */}
-            <MultipleSel
+            <SearchSel
               selForm={selForm}
               columns={columns}
-              selButton={
-                <>
-                  <Button
-                    className="buttonStyle"
-                    type="primary"
-                    onClick={() => {
-                      onFinishSel();
-                    }}
-                    icon={<SearchOutlined />}
-                  >
-                    搜索
-                  </Button>
-                </>
-              }
+              onFinishSel={onFinishSel}
             />
           </div>
           <div className={styles.tableStyles}>
@@ -249,7 +219,6 @@ const Home = function () {
               columns={columns}
               dataSource={ruleData}
               scroll={{scrollToFirstRowOnChange: true,x: 1000}}
-              rowSelection={{ ...rowSelection }}
               rowKey={(record) => record.id}
             />
           </div>

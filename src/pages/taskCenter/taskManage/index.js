@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Form, Popconfirm } from 'antd';
 import moment from 'moment';
-import MultipleSel from 'components/MultipleSel';
+import SearchSel from 'components/SearchSel';
 import AutoScale from 'components/AutoScale';
 import Iconfont from 'components/Iconfont';
 import { useSelector, useDispatch } from 'dva';
@@ -10,7 +10,6 @@ import {
   FormOutlined,
   DeleteOutlined,
   PlusOutlined,
-  SearchOutlined,
   RetweetOutlined
 } from '@ant-design/icons';
 import styles from './index.less';
@@ -76,6 +75,7 @@ const Home = function () {
       dataIndex: 'taskType',
       key: 'taskType',
       flag: true,
+      type: 'select',
       width: 100,
       render: (text) =>{
         const showState = taskTypeList.find(item=> text === item.key)
@@ -103,6 +103,8 @@ const Home = function () {
       title: 'AGV类型',
       dataIndex: 'expectedAgvModelId',
       key: 'expectedAgvModelId',
+      flag: true,
+      type: 'select',
       width: 150,
       render: (text) =>{
         const showState = agvModelList.find(item=> text === item.key)
@@ -119,6 +121,7 @@ const Home = function () {
       dataIndex: 'taskState',
       key: 'taskState',
       flag: true,
+      type: 'select',
       width: 100,
       render: (text) =>{
         const showState = taskStates.find(item=> text === item.key)
@@ -241,25 +244,10 @@ const Home = function () {
         <p className={styles.splitLine} />
         <div className={styles.tableBox}>
           <div className={styles.searchForm}>
-            {/* ↓该组件自行实现，现有组件有bug */}
-            <MultipleSel
+            <SearchSel
               selForm={selForm}
               columns={columns}
-              advancedSearch={true}
-              selButton={
-                <>
-                  <Button
-                    className="buttonStyle"
-                    type="primary"
-                    onClick={() => {
-                      onFinishSel();
-                    }}
-                    icon={<SearchOutlined />}
-                  >
-                    搜索
-                  </Button>
-                </>
-              }
+              onFinishSel={onFinishSel}
             />
           </div>
           <div className={styles.tableStyles}>

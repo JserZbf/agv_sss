@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Form, Popconfirm, Radio, Modal } from 'antd';
-import MultipleSel from 'components/MultipleSel';
+import SearchSel from 'components/SearchSel';
 import AutoScale from 'components/AutoScale';
 import { Link} from 'umi'
 import { useSelector, useDispatch } from 'dva';

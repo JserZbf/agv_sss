@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Table, Button, Form, Popconfirm } from 'antd';
 import { Link} from 'umi';
 import moment from 'moment';
-import MultipleSel from 'components/MultipleSel';
+import SearchSel from 'components/SearchSel';
 import AutoScale from 'components/AutoScale';
 import Iconfont from 'components/Iconfont';
 import { useSelector, useDispatch } from 'dva';
@@ -10,8 +10,7 @@ import BreadcrumbStyle from 'components/breadcrumbStyle';
 import {
   DiffOutlined,
   DeleteOutlined,
-  PlusOutlined,
-  SearchOutlined,
+  PlusOutlined
 } from '@ant-design/icons';
 import styles from './index.less';
 import ModalFrom from './components/ModalFrom';
@@ -22,7 +21,7 @@ const Home = function ({ windowInnerHeight }) {
   const dictPage = (payload) => dispatch({ type: 'vehicleModuleList/dictPage', payload });
   const dictDel = (payload) => dispatch({ type: 'vehicleModuleList/dictDel', payload });
 
-  const { storeData, params, ruleData } = useSelector(
+  const { params, ruleData } = useSelector(
     (models) => models.vehicleModuleList,
   );
 
@@ -145,23 +144,10 @@ const Home = function ({ windowInnerHeight }) {
         <div className={styles.tableBox}>
           <div className={styles.searchForm}>
             {/* ↓该组件自行实现，现有组件有bug */}
-            <MultipleSel
+            <SearchSel
               selForm={selForm}
               columns={searchData}
-              selButton={
-                <>
-                  <Button
-                    className="buttonStyle"
-                    type="primary"
-                    onClick={() => {
-                      onFinishSel();
-                    }}
-                    icon={<SearchOutlined />}
-                  >
-                    搜索
-                  </Button>
-                </>
-              }
+              onFinishSel={onFinishSel}
             />
           </div>
           <div className={styles.tableStyles}>
