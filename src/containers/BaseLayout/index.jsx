@@ -52,7 +52,7 @@ class Layout extends Component {
 
         return (
             <ConfigProvider locale={zhCN}>
-                <DocumentTitle title="基础模块">
+                <DocumentTitle title="AGV调度系统">
                     {pathname === '/login' ?
                         <div  className={styles.container}>{children}</div> :
                         <div className={styles.container}>

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Tree, Button, Upload } from 'antd';
 import AutoScale from 'components/AutoScale';
 import { useSelector, useDispatch } from 'dva';
-import { useParams } from 'umi'
+import { history } from 'umi'
 import BreadcrumbStyle from 'components/breadcrumbStyle';
 import {
   EditOutlined,
@@ -31,13 +31,13 @@ const MapDetail = function (props) {
   const dictTreeData = (payload) => dispatch({ type: 'mapDetail/dictTreeData', payload });
   const dictgetMapData = (payload) => dispatch({ type: 'mapDetail/dictgetMapData', payload });
   const dictAgvModel = (payload) => dispatch({ type: 'mapDetail/dictAgvModel', payload });
+  const dictImport = (payload) => dispatch({ type: 'mapDetail/dictImport', payload });
 
   const { treeData, drawData , textData} = useSelector(
     (models) => models.mapDetail,
   );
   
-
-  const { mapId } = useParams();
+  const mapId = history?.location?.query?.mapId
 
   const [backImgUrl, setBackImgUrl] = useState( window.sessionStorage.getItem(mapId))
   const [expandedKeys, setExpandedKeys] = useState([])
@@ -139,7 +139,7 @@ const MapDetail = function (props) {
                     }
                     {
                       (nodeData.hierarchy === 'site' || nodeData.hierarchy === 'node' || nodeData.hierarchy === 'path') 
-                      && <span>
+                      ? <span>
                         <Button
                           className={styles.editBtn}
                           onClick={(event)=>{
@@ -161,6 +161,20 @@ const MapDetail = function (props) {
                           icon={<DeleteOutlined />} 
                         />
                       </span>
+                      : <span>
+                        {
+                          nodeData.hierarchy === 'action' && <Button
+                            className={styles.editBtn}
+                            onClick={(event)=>{
+                              onSelect(nodeData)
+                              event.stopPropagation()
+                            }}
+                            size="small"
+                            type="primary"
+                            icon={<EditOutlined />} 
+                          />
+                        }
+                      </span>
                     }
                   </span>
                 </div>   
@@ -180,17 +194,6 @@ const MapDetail = function (props) {
               >
                 导出地图
               </Button>
-              <Upload 
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                >
-                <Button
-                  type="primary"
-                  icon={<DownloadOutlined />}
-                  className="addButton"
-                >
-                  导入地图
-                </Button>
-              </Upload>
               <Button
                 type="primary"
                 icon={<RedoOutlined />}
@@ -203,6 +206,7 @@ const MapDetail = function (props) {
               </Button>
               <Upload 
                 action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                accept='.jpeg, .jpg, .png'
                 itemRender={() => (
                   null
                 )}

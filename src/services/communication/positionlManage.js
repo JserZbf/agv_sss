@@ -1,11 +1,11 @@
 import http from '../http';
 
 export const dictPage = (params) => {
-    return http.post('/api/sss-agv-service/Task/getAll', params);
+    return http.post('/api/sss-agv-service/Interact/getAll', params);
 };
 
 export const dictAdd = (params) => {
-    return http.post('/api/sss-agv-service/Task/save', params);
+    return http.post('/api/sss-agv-service/Interact/save', params);
 };
 
 export const dictUpdate = (params) => {
@@ -14,7 +14,7 @@ export const dictUpdate = (params) => {
 
 
 export const dictDel = (params) => {
-    return http.delete('/api/sss-agv-service/Task/delete', params);
+    return http.delete('/api/sss-agv-service/Interact/delete', params);
 };
 
 export const dictTaskStates = () => {

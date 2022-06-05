@@ -252,6 +252,17 @@ export default {
                 });
             }
         },
+        *dictStopTime({}, {}) {
+            try {
+                if (time) {
+                    clearTimeout(time)
+                }
+            } catch (error) {
+                yield put({
+                    type: 'save',
+                });
+            }
+        },
     },
     reducers: {
         save(state, action) {

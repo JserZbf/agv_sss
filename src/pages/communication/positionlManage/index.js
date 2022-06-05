@@ -25,7 +25,7 @@ const Home = function () {
   const dictMapList = (payload) => dispatch({ type: 'positionlManage/dictMapList', payload });
   const dictTaskType = (payload) => dispatch({ type: 'positionlManage/dictTaskType', payload });
 
-  const { isAdd, storeData, visible, params, ruleData, taskStates, agvModelList, taskTypeList, agvPositonList } = useSelector(
+  const { isAdd, total, storeData, visible, params, ruleData, taskStates, agvModelList, taskTypeList, agvPositonList } = useSelector(
     (models) => models.positionlManage,
   );
 
@@ -218,7 +218,12 @@ const Home = function () {
             <Table
               columns={columns}
               dataSource={ruleData}
-              scroll={{scrollToFirstRowOnChange: true,x: 1000}}
+              pagination={{total}}
+              onChange={(pagination)=> {
+                saveModelsState({
+                  params: { ...pagination },
+                });
+              }}
               rowKey={(record) => record.id}
             />
           </div>

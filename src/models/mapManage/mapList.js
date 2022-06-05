@@ -35,7 +35,8 @@ export default {
                     yield put({
                         type: 'save',
                         payload: {
-                            ruleData: data || []
+                            ruleData: data || [],
+                            total: data.total
                         },
                     });
                 } else {

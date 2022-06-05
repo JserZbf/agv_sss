@@ -12,7 +12,6 @@ export const dictUpdate = (params) => {
     return http.put('/api/sss-agv-service/Task/update', params);
 };
 
-
 export const dictDel = (params) => {
     return http.delete('/api/sss-agv-service/Task/delete', params);
 };
@@ -40,3 +39,8 @@ export const dictIssue = (params) => {
 export const dictTaskType = (params) => {
     return http.get('/api/sss-agv-service/Task/taskTypeEnumMap',params);
 };
+
+export const dictCompare = (params) => {
+    return http.get('/api/sss-agv-service/Task/compareEnumMap',params);
+};
+

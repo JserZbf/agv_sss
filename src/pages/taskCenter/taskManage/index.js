@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Form, Popconfirm } from 'antd';
+import { Table, Button, Form, Popconfirm, Select } from 'antd';
 import moment from 'moment';
 import SearchSel from 'components/SearchSel';
 import AutoScale from 'components/AutoScale';
@@ -25,11 +25,13 @@ const Home = function () {
   const dictMapList = (payload) => dispatch({ type: 'taskManage/dictMapList', payload });
   const dictIssue = (payload) => dispatch({ type: 'taskManage/dictIssue', payload });
   const dictTaskType = (payload) => dispatch({ type: 'taskManage/dictTaskType', payload });
+  const dictCompare = (payload) => dispatch({ type: 'taskManage/dictCompare', payload });
 
-  const { params, ruleData, taskStates, agvModelList, taskTypeList } = useSelector(
+  const { params, total, priorityList, ruleData, taskStates, agvModelList, taskTypeList } = useSelector(
     (models) => models.taskManage,
   );
   const [selectKeys, setSelectKeys] = useState([]);
+  const [compareValue, setCompareValue] = useState(priorityList[0]?.key);
 
   const [selForm] = Form.useForm();
   useEffect(() => {
@@ -37,13 +39,22 @@ const Home = function () {
     dictTaskType()
     dictAgvModel()
     dictPage();  
-    dictMapList()
+    dictMapList();
+    dictCompare()
   }, [params]);
+
+  useEffect(() => {
+    setCompareValue(priorityList[0]?.key)
+  }, [priorityList]);
 
   const rowSelection = {
     onChange: (selectedRowKeys) => {
       setSelectKeys(selectedRowKeys);
     },
+    getCheckboxProps: (record) => ({
+      disabled: record.taskState !== 'CREATED',
+      name: record.name,
+    }),
   };
 
   const columns = [
@@ -63,12 +74,21 @@ const Home = function () {
       fixed: 'left',
     },
     {
-      title: '优先级',
-      dataIndex: 'priority',
-      key: 'priority',
-      width: 100,
+      title: '任务状态',
+      dataIndex: 'taskState',
+      key: 'taskState',
       flag: true,
-      type: 'number'
+      type: 'select',
+      width: 100,
+      render: (text) =>{
+        const showState = taskStates.find(item=> text === item.key)
+        return showState?.value
+      },
+      showOption:{
+        key: 'key',
+        content: 'value'
+      },
+      data: taskStates
     },
     {
       title: '任务类型',
@@ -117,21 +137,18 @@ const Home = function () {
       data: agvModelList
     },
     {
-      title: '任务状态',
-      dataIndex: 'taskState',
-      key: 'taskState',
-      flag: true,
-      type: 'select',
+      title: '优先级',
+      dataIndex: 'priority',
+      key: 'priority',
       width: 100,
-      render: (text) =>{
-        const showState = taskStates.find(item=> text === item.key)
-        return showState?.value
-      },
-      showOption:{
-        key: 'key',
-        content: 'value'
-      },
-      data: taskStates
+      flag: true,
+      addonBefore: <Select onChange={(value)=>{setCompareValue(value)}} defaultValue={priorityList[0]} className="select-before">
+        {
+          priorityList && priorityList.map(item=> {
+            return <Option value={item.key}>{item.value}</Option>
+          })
+        }
+    </Select>
     },
     {
       title: '创建人',
@@ -155,11 +172,11 @@ const Home = function () {
       render: (tex, rec) => {
         return (
           <div className="operate">
-            {
-              rec.taskState !== 'FINISHED' && <Button
+            <Button
+              disabled={rec.taskState !== 'CREATED'}
               icon={<FormOutlined />}
               size="small"
-              className="editButton"
+              className={rec.taskState !== 'CREATED' ? "disableButton" : 'editButton'}
               onClick={() => {
                 saveModelsState({
                   isAdd: false,
@@ -171,8 +188,7 @@ const Home = function () {
               }}
             >
               修改
-            </Button> 
-            }
+            </Button>
             <Popconfirm
               title="是否删除？"
               okText="确定"
@@ -198,7 +214,12 @@ const Home = function () {
         if (value !== '') {
           valueForm[key] = value;
         }
+        if (key === 'priority' && value) {
+          valueForm[key] = value;
+          valueForm['compare'] = compareValue;
+        }
       }
+
       saveModelsState({
         params: { ...valueForm },
       });
@@ -247,6 +268,7 @@ const Home = function () {
             <SearchSel
               selForm={selForm}
               columns={columns}
+              params={params}
               onFinishSel={onFinishSel}
             />
           </div>
@@ -255,6 +277,12 @@ const Home = function () {
               columns={columns}
               dataSource={ruleData}
               scroll={{scrollToFirstRowOnChange: true,x: 1000}}
+              pagination={{total}}
+              onChange={(pagination)=> {
+                saveModelsState({
+                  params: { ...pagination },
+                });
+              }}
               rowSelection={{ ...rowSelection }}
               rowKey={(record) => record.id}
             />

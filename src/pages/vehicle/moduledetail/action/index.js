@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Button, Form, Popconfirm, Radio, Modal } from 'antd';
 import AutoScale from 'components/AutoScale';
-import { Link} from 'umi'
+import { Link, history } from 'umi'
 import { useSelector, useDispatch } from 'dva';
 import BreadcrumbStyle from 'components/breadcrumbStyle';
 import {
@@ -143,7 +143,10 @@ const Home = function ({ windowInnerHeight }) {
         <div className={styles.middleBoxButton}>
           <div className={styles.listIcon}>
             <Radio.Group defaultValue="action" buttonStyle="solid">
-              <Link to="/vehicle/moduledetail/attribute">
+            <Link to={{
+                pathname: '/vehicle/moduledetail/attribute',
+                search: `?agvId=${history?.location?.query?.agvId}`
+              }}>
                 <Radio.Button value="attribute">属性</Radio.Button>
               </Link>
               <Radio.Button className={styles.detailtabradio} value="action">动作</Radio.Button>

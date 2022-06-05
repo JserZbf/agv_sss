@@ -38,8 +38,8 @@ export default {
     icon: 'icon-ditu',
   },
   mapDetail: {
-    name: '地图列表',
-    path: '/mapManage/mapDetail/:mapId',
+    name: '地图详情',
+    path: '/mapManage/mapDetail',
     icon: 'icon-ditu',
   },
    //任务中心

@@ -21,7 +21,7 @@ const Home = function ({ windowInnerHeight }) {
   const dictPage = (payload) => dispatch({ type: 'vehicleModuleList/dictPage', payload });
   const dictDel = (payload) => dispatch({ type: 'vehicleModuleList/dictDel', payload });
 
-  const { params, ruleData } = useSelector(
+  const { params, total, ruleData } = useSelector(
     (models) => models.vehicleModuleList,
   );
 
@@ -75,7 +75,10 @@ const Home = function ({ windowInnerHeight }) {
       render: (tex, rec) => {
         return (
           <div className="operate">
-            <Link to="/vehicle/moduledetail/attribute">
+            <Link to={{
+              pathname: '/vehicle/moduledetail/attribute',
+              search: `?agvId=${rec.id}`
+            }}>
               <Button
                 icon={<DiffOutlined />}
                 size="small"
@@ -155,6 +158,12 @@ const Home = function ({ windowInnerHeight }) {
               columns={columns}
               dataSource={ruleData}
               scroll={{ y: windowInnerHeight - 380 }}
+              pagination={{total}}
+              onChange={(pagination)=> {
+                saveModelsState({
+                  params: { ...pagination },
+                });
+              }}
               rowKey={(record) => record.id}
             />
           </div>

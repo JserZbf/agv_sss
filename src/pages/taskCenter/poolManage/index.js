@@ -22,6 +22,7 @@ const Home = function ({}) {
   const dictAgvModel = (payload) => dispatch({ type: 'poolManage/dictAgvModel', payload });
   const dictMapList = (payload) => dispatch({ type: 'poolManage/dictMapList', payload });
   const dictTaskType = (payload) => dispatch({ type: 'poolManage/dictTaskType', payload });
+  const dictStopTime = (payload) => dispatch({ type: 'poolManage/dictStopTime', payload });
 
   const { ruleData, taskStates, agvModelList,taskTypeList } = useSelector(
     (models) => models.poolManage,
@@ -79,7 +80,12 @@ const Home = function ({}) {
     dictTaskStates()
     dictMapList()
     dictPage()
+    return componentWillUnmount;
   }, []);
+
+  const  componentWillUnmount = ()=> {
+    dictStopTime()
+  }
 
   const searchData = [
     {
@@ -175,7 +181,7 @@ const Home = function ({}) {
           </div>
           <p className={styles.splitLine} />
           <div className={styles.cardStyles}>
-          <Row justify="start" gutter={16}>
+          <Row justify="space-around" gutter={16}>
             {
               ruleData.map((item, index)=> {
                 return <Col span={8}>

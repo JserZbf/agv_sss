@@ -36,7 +36,7 @@ const Login = function ({ userInfo, userLogin }) {
             <img alt='' src={xichaiLogo} />
           </div>
           <div className={styles.loginForm}>
-            <p className={styles.title}>基础模块</p>
+            <p className={styles.title}>AGV调度系统</p>
             <Form
               name="basic"
               style={{ width: "100%" }}

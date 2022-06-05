@@ -30,6 +30,7 @@ export default {
         mountVisible: false,   // 挂载弹窗
         parameVisible: false, // 配置弹窗
         ruleData: [],   // table列表
+        isAdd: false, // 是否新增
         params: {
             current: 1,
             pageSize: 10
@@ -325,6 +326,17 @@ export default {
                     },
                 });
                 yield put({ type: 'dictPage' });
+            } catch (error) {
+                yield put({
+                    type: 'save',
+                });
+            }
+        },
+        *dictStopTime({}, {}) {
+            try {
+                if (time) {
+                    clearTimeout(time)
+                }
             } catch (error) {
                 yield put({
                     type: 'save',

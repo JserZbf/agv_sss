@@ -9,7 +9,8 @@ import {
     dictMapList,
     dicPositionList,
     dictIssue,
-    dictTaskType
+    dictTaskType,
+    dictCompare
 } from 'services/taskCenter/taskManage';
 import { notification } from 'antd'
 
@@ -28,14 +29,16 @@ export default {
         ruleData: [],
         params: {
             current: 1,
-            pageSize: 10
+            pageSize: 10,
+            taskState: 'CREATED'
         },
         storeData: [],
         total: "",
         taskStates: [],
         agvModelList: [],
         agvPositonList: [],
-        taskTypeList: []
+        taskTypeList: [],
+        priorityList: []
     },
     effects: {
         *dictPage({}, { call, put, select }) {
@@ -258,7 +261,7 @@ export default {
             try {
                 const { code, message } = yield call(dictIssue, {...payload});
                 if (code === 200) {
-                    openNotificationWithIcon('success', '修改成功');
+                    openNotificationWithIcon('success', '下发成功');
                 } else {
                     openNotificationWithIcon('info', message);
                 };
@@ -287,6 +290,34 @@ export default {
                         type: 'save',
                         payload: {
                             taskTypeList: taskTypeList || []
+                        },
+                    });
+                } else {
+                    openNotificationWithIcon('info', message);
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            taskTypeList: []
+                        },
+                    });
+                }
+
+            } catch (error) {}
+        },
+        *dictCompare({}, { call, put }) {
+            try {
+                const { code, data, message } = yield call(dictCompare);
+                const priorityList = Object.keys(data).map(item => {
+                    return {
+                        key: data[item],
+                        value: item
+                    }
+                })
+                if (code === 200) {
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            priorityList: priorityList || []
                         },
                     });
                 } else {

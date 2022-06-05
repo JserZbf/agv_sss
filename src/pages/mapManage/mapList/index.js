@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
-import { Table, Button, Popconfirm, Switch, Form } from 'antd';
+import { Table, Button, Popconfirm, Switch, Form, Upload } from 'antd';
 import { Link} from 'umi';
 import moment from 'moment';
+import Iconfont from 'components/Iconfont';
 import AutoScale from 'components/AutoScale';
 import SearchSel from 'components/SearchSel';
 import { useSelector, useDispatch } from 'dva';
@@ -12,7 +13,8 @@ import {
   PlusOutlined,
   DiffOutlined,
   CheckOutlined,
-  CloseOutlined
+  CloseOutlined,
+  DownloadOutlined
 } from '@ant-design/icons';
 import styles from './index.less';
 import ModalFrom from './components/ModalFrom';
@@ -24,7 +26,7 @@ const MapList = function ({ windowInnerHeight }) {
   const dictDel = (payload) => dispatch({ type: 'mapList/dictDel', payload });
   const dictUpState = (payload) => dispatch({ type: 'mapList/dictUpState', payload });
 
-  const { params, ruleData } = useSelector(
+  const { params, total, ruleData } = useSelector(
     (models) => models.mapList,
   );
 
@@ -101,10 +103,9 @@ const MapList = function ({ windowInnerHeight }) {
               修改
             </Button> 
             <Link to={{
-                pathname: `/mapManage/mapDetail/${rec.id}`,
-                state: { mapId: rec.id },
-              }}
-            >
+              pathname: '/mapManage/mapDetail',
+              search: `?mapId=${rec.id}`
+            }}>
               <Button
                 icon={<DiffOutlined />}
                 size="small"
@@ -150,6 +151,10 @@ const MapList = function ({ windowInnerHeight }) {
       <BreadcrumbStyle aheadTitle={[{ title: '地图管理' }]} currentTitle="地图列表" />
       <div className={styles.middleBox}>
         <div className={styles.middleBoxButton}>
+        <div className={styles.listIcon}>
+            <Iconfont iconMode="unicode" type="icon-gold" className="prefixIcon" />
+            地图列表管理
+          </div>
           <div className={styles.buttonFlex}>
             <Button
               type="primary"
@@ -165,6 +170,31 @@ const MapList = function ({ windowInnerHeight }) {
             >
               新增
             </Button>
+            <Upload 
+                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                accept='.json'
+                itemRender={() => (
+                  null
+                )}
+                beforeUpload={(file) => {
+                  const reader = new FileReader();
+                  reader.readAsText(file);
+                  reader.onloadend = function () {
+                    const result = JSON.parse(reader.result)
+                    dictImport({...result})
+                    history.push('/mapManage/mapList');
+                  };
+                  return false;
+                }}
+                >
+                <Button
+                  type="primary"
+                  icon={<DownloadOutlined />}
+                  className="addButton"
+                >
+                  导入地图
+                </Button>
+              </Upload>
           </div>
         </div>
         <p className={styles.splitLine} />
@@ -181,6 +211,12 @@ const MapList = function ({ windowInnerHeight }) {
               columns={columns}
               dataSource={ruleData}
               scroll={{ y: windowInnerHeight - 380 }}
+              pagination={{total}}
+              onChange={(pagination)=> {
+                saveModelsState({
+                  params: { ...pagination },
+                });
+              }}
               rowKey={(record) => record.id}
             />
           </div>

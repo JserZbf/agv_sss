@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Modal, Input, Select } from 'antd';
+import { Form, Modal, Select, InputNumber } from 'antd';
 import { useSelector, useDispatch } from 'dva';
 
 const EditModal = ({ saveModelsState, agvModelList, taskTypeList }) => {
@@ -19,7 +19,7 @@ const EditModal = ({ saveModelsState, agvModelList, taskTypeList }) => {
   useEffect(() => {
     if (isAdd) {
       form.resetFields();
-      form.setFieldsValue({taskType: 'MOVE'})
+      form.setFieldsValue({taskType: 'MOVE', priority: 6})
     } else {
       form.setFieldsValue({...storeData})
       setStartPositionInfo({
@@ -120,7 +120,7 @@ const EditModal = ({ saveModelsState, agvModelList, taskTypeList }) => {
           </Select>
         </Form.Item>
         <Form.Item name="priority" label="任务优先级" rules={[{ required: true }]}>
-          <Input autoComplete="off" placeholder="请输入任务优先级" />
+          <InputNumber autoComplete="off" min={0} max={10} placeholder="请输入任务优先级" />
         </Form.Item>
       </Form>
     </Modal>

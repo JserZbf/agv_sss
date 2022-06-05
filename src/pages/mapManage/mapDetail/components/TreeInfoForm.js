@@ -10,10 +10,6 @@ const EditModal = ({
   nodeData,  
 }) => {
 
-  const layout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 14 },
-  };
   const [form] = Form.useForm();
 
 
@@ -27,6 +23,7 @@ const EditModal = ({
   
   const [startPositionName, setStartPositionName] = useState('')
   const [endPositionName, setEndPositionName] = useState('')
+  const [roadType, setRoadType] = useState('')
 
 
   useEffect(() => {
@@ -124,7 +121,8 @@ const EditModal = ({
       >
        <Form
         form={form}
-        {...layout}
+        labelCol= { {span: treeSelectInfo.hierarchy === 'path' ? 8 : 6 }}
+        wrapperCol={{ span: 14 }}
         onFinish={onFinish}
       >
         <Form.Item label="类型" rules={[{ required: true }]}>
@@ -137,16 +135,16 @@ const EditModal = ({
               <Input placeholder="请输入名称" />
             </Form.Item>
             <Form.Item name="x" label="X" rules={[{ required: true }]}>
-              <InputNumber addonAfter="m" placeholder="请输入X坐标" />
+              <InputNumber addonAfter="m" step="0.001" precision="3" placeholder="请输入X坐标" />
             </Form.Item>
             <Form.Item name="y" label="Y" rules={[{ required: true }]}>
-              <InputNumber addonAfter="m" placeholder="请输入Y坐标" />
+              <InputNumber addonAfter="m" step="0.001" precision="3" placeholder="请输入Y坐标" />
             </Form.Item>
-            <Form.Item name="h" label="H">
-              <InputNumber addonAfter="m" placeholder="请输入H坐标" />
+            <Form.Item name="h" label="H" rules={[{ required: true }]}>
+              <InputNumber addonAfter="°" min="-180" max="180" step="0.001" precision="3" placeholder="请输入H坐标" />
             </Form.Item>
-            <Form.Item name="z" label="Z">
-              <InputNumber addonAfter="m" placeholder="请输入Z坐标" />
+            <Form.Item name="z" label="Z" rules={[{ required: true }]}>
+              <InputNumber addonAfter="m" step="0.001" precision="3" placeholder="请输入Z坐标" />
             </Form.Item>
             <Form.Item name="positionType" label="站点类型" rules={[{ required: true }]}>
               {
@@ -175,7 +173,7 @@ const EditModal = ({
           </div>
         }
         {
-          treeSelectInfo.hierarchy === 'normal' && <div>
+          treeSelectInfo.hierarchy === 'action' && <div>
             <Form.Item name="actionArray" label="动作组" rules={[{ required: true }]}>
               <Select>
                 <Select.Option value="ordinary">换刀</Select.Option>
@@ -209,13 +207,13 @@ const EditModal = ({
               <div>{endPositionName}</div>
             </Form.Item>
             <Form.Item name="roadType" label="路线类型" >
-              <Select>
+              <Select onChange={(value)=>{setRoadType(value)}}>
                 <Select.Option value="STRAIGHT">直线</Select.Option>
                 <Select.Option value="CURVE">曲线</Select.Option>
               </Select>
-            </Form.Item>  
+            </Form.Item> 
             {
-              form.getFieldValue('roadType') === 'STRAIGHT' ?
+              roadType === 'STRAIGHT' ?
                 <div>
                   <Form.Item name="direction" label="车体朝向" rules={[{ required: true }]}>
                     <Input autoComplete="off" addonAfter="度" placeholder="请输入朝向" />

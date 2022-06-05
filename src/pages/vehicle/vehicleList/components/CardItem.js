@@ -5,12 +5,13 @@ import {
     DeploymentUnitOutlined,
     LoginOutlined,
     EditOutlined,
+    HighlightOutlined,
     RedoOutlined,
     DeleteOutlined
   } from '@ant-design/icons';
 import styles from '../index.less';
 
-const EditModal = ({ saveModelsState, item, index, agvModelList }) => {
+const EditModal = ({ saveModelsState, item, agvModelList }) => {
   const dispatch = useDispatch();
   const resetAgv = (payload) => dispatch({ type: 'vehicleList/resetAgv', payload });
   const dictDel = (payload) => dispatch({ type: 'vehicleList/dictDel', payload });
@@ -21,9 +22,6 @@ const EditModal = ({ saveModelsState, item, index, agvModelList }) => {
   );
 
   const dataKey = [{
-    key: 'agvName',
-    value: '车辆编码'
-  },{
     key: 'agvModelId',
     value: '车辆类型',
     render:(text)=> {
@@ -42,7 +40,7 @@ const EditModal = ({ saveModelsState, item, index, agvModelList }) => {
     value: '电量'
   },{
     key: 'maxSpeed',
-    value: '速度'
+    value: '加速度'
   },{
     key: 'positionName',
     value: '所在点'
@@ -50,7 +48,7 @@ const EditModal = ({ saveModelsState, item, index, agvModelList }) => {
 
   return (
     <Card
-        title={`站台${index + 1}`}
+        title={item.agvName}
         headStyle={{background: '#6290fa', borderRadius: '20px 20px 0 0', color: '#fff'}}
         style={{borderRadius: '20px'}}
         actions={[
@@ -85,7 +83,14 @@ const EditModal = ({ saveModelsState, item, index, agvModelList }) => {
                     parameVisible: true,
                     agvInfo: item
                 });}
-            } className={styles.cardItemsEdit}><EditOutlined />配置</div>,
+            } className={styles.cardItemsEdit}><HighlightOutlined />配置</div>,
+            <div onClick={()=>{
+              saveModelsState({
+                  visible: true,
+                  agvInfo: item,
+                  isAdd: false
+              });}
+            } className={styles.cardItemsDetail}><EditOutlined />编辑</div>,
             <Popconfirm
                 title="是否删除？"
                 okText="确定"

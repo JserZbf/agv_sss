@@ -10,6 +10,7 @@ import {
     dictSetMapData,
     dictgetMapData,
     dictAgvModel,
+    dictImport
 } from 'services/mapManage/mapDetail';
 import { notification } from 'antd';
 
@@ -352,7 +353,7 @@ export default {
                 const { code,  message } = yield call(dictSetMapData, payload);
 
                 if (code === 200) {
-                    openNotificationWithIcon('success', '保存成功');
+                    // openNotificationWithIcon('success', '保存成功');
                 } else {
                     openNotificationWithIcon('info', message);
                 }
@@ -414,6 +415,27 @@ export default {
                 });
             }
         },
+        *dictImport({ payload }, { call, put, select }) {
+            try {
+
+                const { mapId } = yield select((state) => state.mapDetail);
+
+                const { code, message } = yield call(dictImport, payload);
+
+                if (code === 200) {
+                    openNotificationWithIcon('success', '上传成功');
+                } else {
+                    openNotificationWithIcon('info', message);
+                }
+                yield put({type: 'dictTreeData',payload: {
+                    mapId,
+                }});
+            } catch (error) {
+                yield put({
+                    type: 'save',
+                });
+            }
+        }
     },
     reducers: {
         save(state, action) {

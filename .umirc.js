@@ -33,7 +33,7 @@ export default {
   dynamicImport: {
     loading: 'components/Spin',
   },
-  title: '基础模块',
+  title: 'AGV调度系统',
   headScripts: [
     // header里面插入script脚本
   ].filter((i) => i),

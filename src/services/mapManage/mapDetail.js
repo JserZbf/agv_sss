@@ -8,6 +8,10 @@ export const dictMapList = (params) => {
     return http.get(`/api/sss-agv-service/Map/exportMap/${params.mapId}`);
 };
 
+export const dictImport = (params) => {
+    return http.post('/api/sss-agv-service/Map/importMap', params);
+};
+
 export const dictAdd = (params) => {
     return http.post('/api/sss-agv-service/Position/save', params);
 };
@@ -27,13 +31,13 @@ export const dictRelationAdd = (params) => {
 };
 
 export const dictRelationUpdata = (params) => {
-    return http.put('/api/sss-agv-service/Relation/updata', params);
+    return http.put('/api/sss-agv-service/Relation/update', params);
 };
 
 export const dictRelationDelete = (params) => {
     return http.delete('/api/sss-agv-service/Relation/delete', params);
 };
-// 地图相关
+// 地图相关 
 export const dictgetMapData = (params) => {
     return http.post('/api/sss-agv-service/MapData/getMapData', params);
 };

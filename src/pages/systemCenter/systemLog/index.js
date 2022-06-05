@@ -3,6 +3,7 @@ import { Table, Button, Form } from 'antd';
 import SearchSel from 'components/SearchSel';
 import AutoScale from 'components/AutoScale';
 import Iconfont from 'components/Iconfont';
+import moment from 'moment';
 import { useSelector, useDispatch } from 'dva';
 import BreadcrumbStyle from 'components/breadcrumbStyle';
 import {
@@ -10,13 +11,13 @@ import {
 } from '@ant-design/icons';
 import styles from './index.less';
 
-const Home = function () {
+const Home = function ({windowInnerHeight}) {
   const dispatch = useDispatch();
   const saveModelsState = (payload) => dispatch({ type: 'systemLog/save', payload });
   const dictPage = (payload) => dispatch({ type: 'systemLog/dictPage', payload });
   const dictTaskStates = (payload) => dispatch({ type: 'systemLog/dictTaskStates', payload });
 
-  const { params, ruleData, taskStates } = useSelector(
+  const { params, total, ruleData, taskStates } = useSelector(
     (models) => models.systemLog,
   );
 
@@ -26,26 +27,20 @@ const Home = function () {
     dictPage();
   }, [params]);
 
-  const columns = [
-    {
-      title: '序号',
-      render: (text, record, index) => <span>{index + 1}</span>,
-      width: 100,  
-      dataIndex: 'index',
-    },
+  const searchForm = [
     {
       title: '时间',
-      dataIndex: 'taskCode',
-      key: 'taskCode',
-      width: 200,
+      dataIndex: 'time',
+      key: 'time',
+      width: 150,
       flag: true,
-      type: 'datePicker',
+      type: 'rangePicker',
     },
     {
       title: '类型',
       dataIndex: 'agvStateType',
       key: 'agvStateType',
-      width: 200,
+      width: 100,
       flag: true,
       type: 'select',
       render: (text) =>{
@@ -58,17 +53,43 @@ const Home = function () {
       },
       data: taskStates
     },
+  ]
+
+  const columns = [
+    {
+      title: '序号',
+      render: (text, record, index) => <span>{index + 1}</span>,
+      width: 80,  
+      dataIndex: 'index',
+    },
+    {
+      title: '时间',
+      dataIndex: 'createTime',
+      key: 'createTime',
+      width: 150,
+      flag: true,
+      type: 'datePicker',
+    },
+    {
+      title: '类型',
+      dataIndex: 'agvStateType',
+      key: 'agvStateType',
+      width: 100,
+      render: (text) =>{
+        const showState = taskStates.find(item=> text === item.key)
+        return showState?.value
+      }
+    },
     {
       title: '名称',
       dataIndex: 'agvName',
       key: 'agvName',
-      width: 200,
+      width: 150,
     },
     {
       title: '详细描述',
       dataIndex: 'agvStateRecordDescription',
-      key: 'agvStateRecordDescription',
-      width: 200,
+      key: 'agvStateRecordDescription'
     }
   ];
 
@@ -77,7 +98,20 @@ const Home = function () {
       const valueForm = {};
       for (const [key, value] of Object.entries(values)) {
         if (value !== '') {
-          valueForm[key] = value;
+          if (key === 'time' && value) {
+            value.forEach((item, index)=> {
+              switch(index) {
+                case 0:
+                  valueForm['startTime'] = moment(item).format('YYYY-MM-DD HH:mm:ss');
+                  break;
+                case 1:
+                  valueForm['endTime'] = moment(item).format('YYYY-MM-DD HH:mm:ss');
+                  break;
+              }
+            })
+          } else {
+            valueForm[key] = value
+          }
         }
       }
       saveModelsState({
@@ -117,7 +151,7 @@ const Home = function () {
           <div className={styles.searchForm}>
             <SearchSel
               selForm={selForm}
-              columns={columns}
+              columns={searchForm}
               onFinishSel={onFinishSel}
             />
           </div>
@@ -125,7 +159,13 @@ const Home = function () {
             <Table
               columns={columns}
               dataSource={ruleData}
-              scroll={{scrollToFirstRowOnChange: true,x: 1000}}
+              scroll={{ y: windowInnerHeight - 380, x: 'max-content' }}
+              pagination={{total}}
+              onChange={(pagination)=> {
+                saveModelsState({
+                  params: { ...pagination },
+                });
+              }}
               rowKey={(record) => record.id}
             />
           </div>

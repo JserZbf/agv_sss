@@ -7,7 +7,9 @@ import {
 } from '@ant-design/icons';
 import styles from './index.less';
 
-const SearchSel = ({ columns, selForm, onFinishSel }) => {
+const { RangePicker } = DatePicker;
+
+const SearchSel = ({ columns, selForm, onFinishSel, params }) => {
 
   const [expand, setExpand] = useState(false);
   const [searchData, setSearchData] = useState([]);
@@ -15,13 +17,14 @@ const SearchSel = ({ columns, selForm, onFinishSel }) => {
 
   useEffect(() => {
     setSearchData(columns.filter((item) => item.flag))
+    selForm.setFieldsValue({...params})
   }, [columns]);
 
   const renderFrom = (item) => {
     let childNode = null
     switch(item.type) {
       case 'number':
-        childNode = <InputNumber placeholder={`请输入${item?.title}`} style={{ width: '100%' }} />
+        childNode = <InputNumber addonBefore={item.addonBefore} placeholder={`请输入${item?.title}`} style={{ width: '100%' }} />
         break;
       case 'select':
         const showOptionKey =item?.showOption?.key || 'key';
@@ -43,10 +46,13 @@ const SearchSel = ({ columns, selForm, onFinishSel }) => {
                     </Select>
         break;
       case 'datePicker':
-          childNode = <DatePicker />
+          childNode = <DatePicker format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }}/>
+          break;
+      case 'rangePicker':
+          childNode = <RangePicker format="YYYY-MM-DD HH:mm:ss" showTime={{ format: 'HH:mm:ss' }} style={{ width: '100%' }}/>
           break;
       default:
-        childNode = <Input placeholder={`请输入${item?.title}`} style={{ width: '100%' }} />
+        childNode = <Input addonBefore={item.addonBefore} placeholder={`请输入${item?.title}`} style={{ width: '100%' }} />
     }
     return childNode
    };
@@ -64,7 +70,7 @@ const SearchSel = ({ columns, selForm, onFinishSel }) => {
           {
            (expand ? searchData: searchData.slice(0,3)).map(item=> {
              return (
-              <Col span={6} style={{ marginBottom: expand ? '10px' : '0px' }} key={item.key}>
+              <Col span={item.type==='rangePicker' ? 8 : 6} style={{ marginBottom: expand ? '10px' : '0px' }} key={item.key}>
                 <Form.Item label={`${item.title}`} name={`${item.key}`}>
                     {renderFrom(item)}
                 </Form.Item>

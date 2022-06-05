@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { Form, Modal, Input } from 'antd';
 import { useSelector, useDispatch } from 'dva';
 
+const { TextArea } = Input;
+
 const EditModal = ({ saveModelsState }) => {
 
   const dispatch = useDispatch();  
@@ -62,7 +64,7 @@ const EditModal = ({ saveModelsState }) => {
           <Input autoComplete="off" placeholder="请输入地图名称" />
         </Form.Item>
         <Form.Item name="mapDescription" label="描述">
-          <Input autoComplete="off" placeholder="请输入描述" />
+          <TextArea rows={4} placeholder="请输入备注"/>
         </Form.Item>
       </Form>
     </Modal>

@@ -3,6 +3,7 @@ import { Button, Form, Row, Col } from 'antd';
 import SearchSel from 'components/SearchSel';
 import AutoScale from 'components/AutoScale';
 import { useSelector, useDispatch } from 'dva';
+import Iconfont from 'components/Iconfont';
 import BreadcrumbStyle from 'components/breadcrumbStyle';
 import {
   PlusOutlined
@@ -20,6 +21,7 @@ const Home = function () {
   const dictState = (payload) => dispatch({ type: 'vehicleList/dictState', payload });
   const dictAgvModel = (payload) => dispatch({ type: 'vehicleList/dictAgvModel', payload });
   const dictMapList = (payload) => dispatch({ type: 'vehicleList/dictMapList', payload });
+  const dictStopTime = (payload) => dispatch({ type: 'vehicleList/dictStopTime', payload });
 
   const {  params, ruleData, agvModelList, agvPositonList, agvInfo } = useSelector(
     (models) => models.vehicleList,
@@ -34,7 +36,12 @@ const Home = function () {
     dictState()
     dictAgvModel()
     dictMapList()
+    return componentWillUnmount;
   }, []);
+
+  const  componentWillUnmount = ()=> {
+    dictStopTime()
+  }
 
   const searchData = [
     {
@@ -77,6 +84,10 @@ const Home = function () {
       <BreadcrumbStyle aheadTitle={[{ title: '车辆中心' }]} currentTitle="车辆管理" />
       <div className={styles.middleBox}>
         <div className={styles.middleBoxButton}>
+          <div className={styles.listIcon}>
+            <Iconfont iconMode="unicode" type="icon-gold" className="prefixIcon" />
+            车辆管理列表
+          </div>
           <div className={styles.buttonFlex}>
             <Button
               type="primary"
@@ -85,6 +96,7 @@ const Home = function () {
               onClick={() => {
                 saveModelsState({
                   visible: true,
+                  isAdd: true
                 });
               }}
             >
@@ -105,12 +117,11 @@ const Home = function () {
           <div className={styles.cardStyles}>
           <Row justify="start" gutter={16}>
             {
-              ruleData.map((item, index)=> {
-                return <Col span={7}>
+              ruleData.map((item)=> {
+                return <Col>
                   <div className={styles.cardItemsStyles}>
                     <CardItem
                       item={item}
-                      index={index}
                       saveModelsState={saveModelsState}
                       agvModelList={agvModelList}
                     />
