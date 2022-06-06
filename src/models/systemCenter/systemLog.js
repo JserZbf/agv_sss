@@ -1,6 +1,6 @@
 
 import {
-    dictPage, dictTaskStates
+    dictPage, dictTaskStates, dictExport
 } from 'services/systemCenter/systemLog';
 import { notification } from 'antd'
 
@@ -87,6 +87,26 @@ export default {
                     payload: {
                         taskStates: [],
                     },
+                });
+            }
+        },
+        *dictExport({payload}, { call, put }) {
+            try {
+                
+                const { datas, fileName} = yield call(dictExport, payload);
+                let eleLink = document.createElement('a');
+                eleLink.download = fileName;
+                eleLink.style.display = 'none';
+                eleLink.href = URL.createObjectURL(datas);
+                // 触发点击
+                document.body.appendChild(eleLink);
+                eleLink.click();
+                // 然后移除
+                document.body.removeChild(eleLink);
+
+            } catch (error) {
+                yield put({
+                    type: 'save'
                 });
             }
         },

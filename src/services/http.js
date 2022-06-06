@@ -102,8 +102,8 @@ export class Http {
     };
     this.fileNameFromHeader = (disposition) => {
       let result = null;
-      if (disposition && /filename=.*/gi.test(disposition)) {
-        result = disposition.match(/filename=.*/gi);
+      if (disposition && /filename.*/gi.test(disposition)) {
+        result = disposition.match(/filename.*/gi);
         return decodeURI(result[0].split('=')[1]);
       }
       return null;
@@ -174,7 +174,7 @@ export class Http {
     if (contentType && contentType.includes('application/vnd.ms-excel')) {
       return {
         fileName: this.fileNameFromHeader(response.headers.get('content-disposition')),
-        datas: response.blob(),
+        datas: await response.blob(),
       };
     }
 

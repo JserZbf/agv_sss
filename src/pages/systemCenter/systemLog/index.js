@@ -16,6 +16,7 @@ const SystemLog = function ({windowInnerHeight}) {
   const saveModelsState = (payload) => dispatch({ type: 'systemLog/save', payload });
   const dictPage = (payload) => dispatch({ type: 'systemLog/dictPage', payload });
   const dictTaskStates = (payload) => dispatch({ type: 'systemLog/dictTaskStates', payload });
+  const dictExport = (payload) => dispatch({ type: 'systemLog/dictExport', payload });
 
   const { params, total, ruleData, taskStates } = useSelector(
     (models) => models.systemLog,
@@ -120,6 +121,31 @@ const SystemLog = function ({windowInnerHeight}) {
     });
   };
 
+  const exportLog = () => {
+    selForm.validateFields().then((values) => {
+      const valueForm = {};
+      for (const [key, value] of Object.entries(values)) {
+        if (value !== '') {
+          if (key === 'time' && value) {
+            value.forEach((item, index)=> {
+              switch(index) {
+                case 0:
+                  valueForm['startTime'] = moment(item).format('YYYY-MM-DD HH:mm:ss');
+                  break;
+                case 1:
+                  valueForm['endTime'] = moment(item).format('YYYY-MM-DD HH:mm:ss');
+                  break;
+              }
+            })
+          } else {
+            valueForm[key] = value
+          }
+        }
+      }
+      dictExport({...valueForm, current: 1})
+    });
+  }
+
   return (
     <div className={styles.container}>
       <BreadcrumbStyle aheadTitle={[{ title: '系统改中心' }]} currentTitle="系统日志" />
@@ -135,11 +161,7 @@ const SystemLog = function ({windowInnerHeight}) {
               icon={<PlusOutlined />}
               className="addButton"
               onClick={() => {
-                saveModelsState({
-                  visible: true,
-                  isAdd: true,
-                  storeData: {}
-                });
+                exportLog()   
               }}
             >
               导出

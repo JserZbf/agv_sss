@@ -6,3 +6,7 @@ export const dictPage = (params) => {
 export const dictTaskStates = () => {
     return http.get('/api/sss-agv-service/AgvRecord/getRecordTypeEnum');
 };
+
+export const dictExport = (params) => {
+    return http.post('/api/sss-agv-service/AgvRecord/export', params);
+};
