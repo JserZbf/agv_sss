@@ -14,7 +14,7 @@ import styles from './index.less';
 import ModalFrom from './components/ModalFrom';
 import AddFrom from './components/AddFrom';
 
-const Home = function ({ windowInnerHeight }) {
+const VehicleAction = function ({ windowInnerHeight }) {
   const dispatch = useDispatch();
   const saveModelsState = (payload) => dispatch({ type: 'vehicleAction/save', payload });
   const dictPage = (payload) => dispatch({ type: 'vehicleAction/dictPage', payload });
@@ -205,4 +205,4 @@ const Home = function ({ windowInnerHeight }) {
   );
 };
 
-export default AutoScale(Home);
+export default AutoScale(VehicleAction);

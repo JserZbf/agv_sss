@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons';
 import styles from './index.less';
 
-const Home = function ({windowInnerHeight}) {
+const SystemLog = function ({windowInnerHeight}) {
   const dispatch = useDispatch();
   const saveModelsState = (payload) => dispatch({ type: 'systemLog/save', payload });
   const dictPage = (payload) => dispatch({ type: 'systemLog/dictPage', payload });
@@ -175,4 +175,4 @@ const Home = function ({windowInnerHeight}) {
   );
 };
 
-export default AutoScale(Home);
+export default AutoScale(SystemLog);

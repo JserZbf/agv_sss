@@ -14,7 +14,7 @@ import MountFrom from './components/MountFrom';
 import ParameFrom from './components/ParameFrom';
 import CardItem from './components/CardItem';
 
-const Home = function () {
+const VehicleList = function () {
   const dispatch = useDispatch();
   const saveModelsState = (payload) => dispatch({ type: 'vehicleList/save', payload });
   const dictPage = (payload) => dispatch({ type: 'vehicleList/dictPage', payload });
@@ -118,7 +118,7 @@ const Home = function () {
           <Row justify="start" gutter={16}>
             {
               ruleData.map((item)=> {
-                return <Col>
+                return <Col key={item.key}>
                   <div className={styles.cardItemsStyles}>
                     <CardItem
                       item={item}
@@ -152,4 +152,4 @@ const Home = function () {
   );
 };
 
-export default AutoScale(Home);
+export default AutoScale(VehicleList);

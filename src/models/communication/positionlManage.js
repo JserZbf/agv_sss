@@ -97,6 +97,9 @@ export default {
 
                 yield put({
                     type: 'save',
+                    payload: {
+                        visible: false,
+                    },
                 });
                 yield put({ type: 'dictPage' });
             } catch (error) {
@@ -116,6 +119,9 @@ export default {
 
                 yield put({
                     type: 'save',
+                    payload: {
+                        visible: false,
+                    },
                 });
                 yield put({ type: 'dictPage' });
             } catch (error) {
@@ -158,142 +164,7 @@ export default {
                     },
                 });
             }
-        },
-        *dictAgvModel({}, { call, put }) {
-            try {
-                const { code, data, message } = yield call(dictAgvModel, {current: 1, pageSize: 100});
-                const agvModelList = data?.records.map(item => {
-                    return {
-                        key: item.id,
-                        value: item.agvModelName
-                    }
-                })
-                if (code === 200) {
-                    yield put({
-                        type: 'save',
-                        payload: {
-                            agvModelList: agvModelList || []
-                        },
-                    });
-                } else {
-                    openNotificationWithIcon('info', message);
-                    yield put({
-                        type: 'save',
-                        payload: {
-                            agvModelList: agvModelList || []
-                        },
-                    });
-                }
-
-            } catch (error) {
-                yield put({
-                    type: 'save',
-                    payload: {
-                        agvModelList: [],
-                    },
-                });
-            }
-        },
-        *dictMapList({}, { call, put }) {
-            try {
-                const { code, data, message } = yield call(dictMapList, {current: 1, pageSize: 999});
-                if (code === 200) {      
-                    const findUsedMapInfo = data.filter(item=> item.used)
-                    if (findUsedMapInfo.length) {
-                        yield put({type: 'dicPositionList',payload: {
-                            mapId: findUsedMapInfo[0].id,
-                        }});
-                    }
-                    
-                } else {
-                    openNotificationWithIcon('info', message);
-                }
-
-            } catch (error) {}
-        },
-        *dicPositionList({ payload }, { call, put }) {
-            try {
-                const { code, data, message } = yield call(dicPositionList, {...payload});
-
-                const agvPositonList = data.map(item => {
-                    return {
-                        key: item.id,
-                        value: item.positionName
-                    }
-                })
-                if (code === 200) {
-                    yield put({
-                        type: 'save',
-                        payload: {
-                            agvPositonList: agvPositonList || []
-                        },
-                    });
-                } else {
-                    openNotificationWithIcon('info', message);
-                    yield put({
-                        type: 'save',
-                        payload: {
-                            agvPositonList: agvPositonList || []
-                        },
-                    });
-                }
-
-            } catch (error) {
-                yield put({
-                    type: 'save',
-                    payload: {
-                        agvPositonList: [],
-                    },
-                });
-            }
-        },
-        *dictIssue({ payload }, { call, put }) {
-            try {
-                const { code, message } = yield call(dictIssue, {...payload});
-                if (code === 200) {
-                    openNotificationWithIcon('success', '修改成功');
-                } else {
-                    openNotificationWithIcon('info', message);
-                };
-
-                yield put({
-                    type: 'save',
-                });
-                yield put({ type: 'dictPage' });
-            } catch (error) {
-                yield put({
-                    type: 'save',
-                });
-            }
-        },
-        *dictTaskType({}, { call, put }) {
-            try {
-                const { code, data, message } = yield call(dictTaskType);
-                const taskTypeList = Object.keys(data).map(item => {
-                    return {
-                        key: data[item],
-                        value: item
-                    }
-                })
-                if (code === 200) {
-                    yield put({
-                        type: 'save',
-                        payload: {
-                            taskTypeList: taskTypeList || []
-                        },
-                    });
-                } else {
-                    openNotificationWithIcon('info', message);
-                    yield put({
-                        type: 'save',
-                        payload: {
-                            taskTypeList: []
-                        },
-                    });
-                }
-
-            } catch (error) {}
-        },
+        }
     },
     reducers: {
         save(state, action) {

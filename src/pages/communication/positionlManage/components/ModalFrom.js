@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Modal, Input, Select } from 'antd';
+import { Form, Modal, Input } from 'antd';
+import { useSelector, useDispatch } from 'dva';
 
-const EditModal = ({ isAdd, visible, saveModelsState,dictAdd, dictUpdate, storeData, taskStates, agvModelList, agvPositonList, dictMapList, taskTypeList }) => {
+const EditModal = ({ saveModelsState}) => {
+
+  const dispatch = useDispatch();  
+  const dictAdd = (payload) => dispatch({ type: 'positionlManage/dictAdd', payload });
+  const dictUpdate = (payload) => dispatch({ type: 'positionlManage/dictUpdate', payload });
+
+  const {  isAdd, visible, storeData } = useSelector(
+    (models) => models.positionlManage,
+  );
+
   
   const [form] = Form.useForm();
 
@@ -68,7 +78,7 @@ const EditModal = ({ isAdd, visible, saveModelsState,dictAdd, dictUpdate, storeD
           <Input autoComplete="off" placeholder="请输入交互点位名称" />
         </Form.Item>
         <Form.Item name="interactKey" label="交互点位" rules={[{ required: true }]}>
-          <Input autoComplete="off" placeholder="请输入任务优先级" />
+          <Input autoComplete="off" placeholder="请输入交互点位" />
         </Form.Item>
         <Form.Item name="expectedValue" label="期望值" rules={[{ required: true }]}>
           <Input autoComplete="off" placeholder="请输入期望值" />

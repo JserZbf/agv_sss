@@ -62,7 +62,7 @@ const EditModal = ({ saveModelsState, agvModelList, agvPositonList }) => {
               <Select placeholder="请选择车辆类型" >
                 {
                   agvModelList && agvModelList.map(item=> {
-                    return <Select.Option value={item.key}>{item.value}</Select.Option>
+                    return <Select.Option key={item.key} value={item.key}>{item.value}</Select.Option>
                   })
                 }
               </Select>
@@ -73,7 +73,7 @@ const EditModal = ({ saveModelsState, agvModelList, agvPositonList }) => {
               <Select placeholder="请选择所在节点" >
                 {
                   agvPositonList && agvPositonList.map(item=> {
-                    return <Select.Option value={item.key}>{item.value}</Select.Option>
+                    return <Select.Option key={item.key} value={item.key}>{item.value}</Select.Option>
                   })
                 }
               </Select>

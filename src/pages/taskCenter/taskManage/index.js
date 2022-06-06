@@ -15,7 +15,7 @@ import {
 import styles from './index.less';
 import ModalFrom from './components/ModalFrom';
 
-const Home = function () {
+const TaskManage = function () {
   const dispatch = useDispatch();
   const saveModelsState = (payload) => dispatch({ type: 'taskManage/save', payload });
   const dictPage = (payload) => dispatch({ type: 'taskManage/dictPage', payload });
@@ -142,6 +142,7 @@ const Home = function () {
       key: 'priority',
       width: 100,
       flag: true,
+      type: 'number',
       addonBefore: <Select onChange={(value)=>{setCompareValue(value)}} defaultValue={priorityList[0]} className="select-before">
         {
           priorityList && priorityList.map(item=> {
@@ -300,4 +301,4 @@ const Home = function () {
   );
 };
 
-export default AutoScale(Home);
+export default AutoScale(TaskManage);

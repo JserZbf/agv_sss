@@ -48,7 +48,7 @@ const MountFrom = ({saveModelsState, agvPositonList, agvInfo }) => {
          <Select>
             {
               agvPositonList && agvPositonList.map(item=> {
-                return <Select.Option value={item.key}>{item.value}</Select.Option>
+                return <Select.Option key={item.key} value={item.key}>{item.value}</Select.Option>
               })
             }
           </Select>

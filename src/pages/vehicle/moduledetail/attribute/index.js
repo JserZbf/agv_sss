@@ -10,7 +10,7 @@ import {
 import styles from './index.less';
 import ModalFrom from './components/ModalFrom';
 
-const Home = function ({ windowInnerHeight }) {
+const VehicleAttribute = function ({ windowInnerHeight }) {
   const dispatch = useDispatch();
   const saveModelsState = (payload) => dispatch({ type: 'vehicleAttribute/save', payload });
   const dictPage = (payload) => dispatch({ type: 'vehicleAttribute/dictPage', payload });
@@ -116,4 +116,4 @@ const Home = function ({ windowInnerHeight }) {
   );
 };
 
-export default AutoScale(Home);
+export default AutoScale(VehicleAttribute);

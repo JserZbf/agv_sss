@@ -13,29 +13,20 @@ import {
 import styles from './index.less';
 import ModalFrom from './components/ModalFrom';
 
-const Home = function () {
+const PositionlManage = function () {
   const dispatch = useDispatch();
   const saveModelsState = (payload) => dispatch({ type: 'positionlManage/save', payload });
   const dictPage = (payload) => dispatch({ type: 'positionlManage/dictPage', payload });
-  const dictAdd = (payload) => dispatch({ type: 'positionlManage/dictAdd', payload });
-  const dictUpdate = (payload) => dispatch({ type: 'positionlManage/dictUpdate', payload });
   const dictDel = (payload) => dispatch({ type: 'positionlManage/dictDel', payload });
   const dictTaskStates = (payload) => dispatch({ type: 'positionlManage/dictTaskStates', payload });
-  const dictAgvModel = (payload) => dispatch({ type: 'positionlManage/dictAgvModel', payload });
-  const dictMapList = (payload) => dispatch({ type: 'positionlManage/dictMapList', payload });
-  const dictTaskType = (payload) => dispatch({ type: 'positionlManage/dictTaskType', payload });
 
-  const { isAdd, total, storeData, visible, params, ruleData, taskStates, agvModelList, taskTypeList, agvPositonList } = useSelector(
+  const { total, params, ruleData, taskStates } = useSelector(
     (models) => models.positionlManage,
   );
 
   const [selForm] = Form.useForm();
   useEffect(() => {
-    dictTaskStates()
-    dictTaskType()
-    dictAgvModel()
-    dictPage();  
-    dictMapList()
+    dictPage();
   }, [params]);
 
 
@@ -49,60 +40,36 @@ const Home = function () {
     },
     {
       title: '设备',
-      dataIndex: 'taskCode',
-      key: 'taskCode',
+      dataIndex: 'interactName',
+      key: 'interactName',
       width: 200,
       flag: true,
-      fixed: 'left',
     },
     {
       title: '描述',
       dataIndex: 'priority',
       key: 'priority',
-      width: 100,
-      type: 'number'
     },
     {
       title: '点位',
-      dataIndex: 'taskType',
-      key: 'taskType',
-      width: 100,
-      render: (text) =>{
-        const showState = taskTypeList.find(item=> text === item.key)
-        return showState?.value
-      },
-      showOption:{
-        key: 'key',
-        content: 'value'
-      },
-      data: taskTypeList
+      dataIndex: 'interactKey',
+      key: 'interactKey'
     },
     {
       title: '数据类型',
-      dataIndex: 'startPositionName',
-      key: 'startPositionName',
-      width: 200,
+      dataIndex: 'interactType',
+      key: 'interactType'
     },
     {
       title: '期望值',
-      dataIndex: 'endPositionName',
-      key: 'endPositionName',
-      width: 200,
+      dataIndex: 'expectedValue',
+      key: 'expectedValue'
     },
     {
       title: '当前值',
-      dataIndex: 'expectedAgvModelId',
-      key: 'expectedAgvModelId',
-      width: 150,
-      render: (text) =>{
-        const showState = agvModelList.find(item=> text === item.key)
-        return showState?.value
-      },
-      showOption:{
-        key: 'key',
-        content: 'value'
-      },
-      data: agvModelList
+      dataIndex: 'interactValue',
+      key: 'interactValue',
+      width: 150
     },
     {
       title: '数据流向',
@@ -110,16 +77,6 @@ const Home = function () {
       key: 'taskState',
       flag: true,
       width: 100,
-      type: 'select',
-      render: (text) =>{
-        const showState = taskStates.find(item=> text === item.key)
-        return showState?.value
-      },
-      showOption:{
-        key: 'key',
-        content: 'value'
-      },
-      data: taskStates
     },
     {
       title: '操作',
@@ -231,19 +188,9 @@ const Home = function () {
       </div>
       <ModalFrom
         saveModelsState={saveModelsState}
-        dictAdd={dictAdd}
-        dictUpdate={dictUpdate}
-        taskStates={taskStates}
-        visible={visible}
-        isAdd={isAdd}
-        storeData={storeData}
-        agvModelList={agvModelList}
-        agvPositonList={agvPositonList}
-        dictMapList={dictMapList}
-        taskTypeList={taskTypeList}
       />
     </div>
   );
 };
 
-export default AutoScale(Home);
+export default AutoScale(PositionlManage);

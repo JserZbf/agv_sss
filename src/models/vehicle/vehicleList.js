@@ -301,6 +301,7 @@ export default {
                     type: 'save',
                     payload: {
                         parameVisible: false,
+                        visible: false
                     },
                 });
                 yield put({ type: 'dictPage' });

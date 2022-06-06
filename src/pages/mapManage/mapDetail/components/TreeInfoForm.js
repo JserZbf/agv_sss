@@ -37,6 +37,7 @@ const EditModal = ({
       form.setFieldsValue({
         ...treeSelectInfo
       })
+      treeSelectInfo.roadType &&  setRoadType(treeSelectInfo.roadType)
     }
   }, [treeSelectInfo, isAdd]);
 
@@ -64,7 +65,7 @@ const EditModal = ({
         endDirection: treeSelectInfo.endDirection,
         distance: treeSelectInfo.distance,
         direction: treeSelectInfo.direction,
-        roadType: treeSelectInfo.roadType,
+        roadType,
         startPositionId: treeSelectInfo.startPositionId,
         endPositionId: treeSelectInfo.endPositionId,
         id: treeSelectInfo.id

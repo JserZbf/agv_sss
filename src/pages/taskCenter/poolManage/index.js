@@ -12,7 +12,7 @@ import styles from './index.less';
 
 const { Step } = Steps;
 
-const Home = function ({}) {
+const PoolManage = function ({}) {
   const dispatch = useDispatch();
   const saveModelsState = (payload) => dispatch({ type: 'poolManage/save', payload });
   const dictPage = (payload) => dispatch({ type: 'poolManage/dictPage', payload });
@@ -241,4 +241,4 @@ const Home = function ({}) {
   );
 };
 
-export default AutoScale(Home);
+export default AutoScale(PoolManage);
