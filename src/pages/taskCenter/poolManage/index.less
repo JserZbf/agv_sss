@@ -96,9 +96,10 @@
     overflow: scroll;
     overflow-x: hidden;
     height: 100%;
+    background: #FCFDFF;
     .cardItemsStyles {
-      margin: 10px 0;
-      width: 330px;
+      margin: 10px 12px;
+      width: 405px;
       height: 400px;
       .cardItemsMount {
         color: #ff6a00;
@@ -115,9 +116,18 @@
       .cardItemsDelete {
         color: #ea6563;
       }
+      .listItemcontent {
+        width: 50%;
+        display: inline-block;
+        &:last-child {
+          border-bottom: 1px solid #f0f0f0;
+        }
+        .listItemTitle {
+          color: rgba(174, 175, 179, 1);
+        }
+      }
     }
   }
-
 }
 
 

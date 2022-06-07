@@ -141,7 +141,7 @@ const MapList = function ({ windowInnerHeight }) {
         }
       }
       saveModelsState({
-        params: { ...params, ...valueForm },
+        params: { ...valueForm },
       });
     });
   };

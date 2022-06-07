@@ -17,6 +17,10 @@ export const dictDel = (params) => {
     return http.delete('/api/sss-agv-service/Interact/delete', params);
 };
 
-export const dictTaskStates = () => {
-    return http.get('/api/sss-agv-service/Task/taskStateEnumMap');
+export const dictInteractStates = () => {
+    return http.get('/api/sss-agv-service/Interact/interactTypeEnumMap');
+};
+
+export const dictInteractType = () => {
+    return http.get('/api/sss-agv-service/Interact/interactTypeMap');
 };

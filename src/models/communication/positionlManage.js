@@ -1,6 +1,6 @@
 
 import {
-    dictPage, dictAdd, dictUpdate, dictDel, dictTaskStates, dictAgvModel, dictMapList, dicPositionList, dictIssue, dictTaskType
+    dictPage, dictAdd, dictUpdate, dictDel, dictInteractStates, dictInteractType
 } from 'services/communication/positionlManage';
 import { notification } from 'antd'
 
@@ -25,10 +25,8 @@ export default {
         },
         storeData: [],
         total: "",
-        taskStates: [],
-        agvModelList: [],
-        agvPositonList: [],
-        taskTypeList: []
+        interactList: [],
+        interactTypeList: []
     },
     effects: {
         *dictPage({}, { call, put, select }) {
@@ -130,10 +128,10 @@ export default {
                 });
             }
         },
-        *dictTaskStates({}, { call, put }) {
+        *dictInteractStates({}, { call, put }) {
             try {
-                const { code, data, message } = yield call(dictTaskStates);
-                const taskSraresList = Object.keys(data).map(item => {
+                const { code, data, message } = yield call(dictInteractStates);
+                const interactList = Object.keys(data).map(item => {
                     return {
                         key: data[item],
                         value: item
@@ -143,7 +141,7 @@ export default {
                     yield put({
                         type: 'save',
                         payload: {
-                            taskStates: taskSraresList || []
+                            interactList: interactList || []
                         },
                     });
                 } else {
@@ -151,7 +149,7 @@ export default {
                     yield put({
                         type: 'save',
                         payload: {
-                            taskStates: []
+                            interactList: []
                         },
                     });
                 }
@@ -160,7 +158,42 @@ export default {
                 yield put({
                     type: 'save',
                     payload: {
-                        taskStates: [],
+                        interactList: [],
+                    },
+                });
+            }
+        },
+        *dictInteractType({}, { call, put }) {
+            try {
+                const { code, data, message } = yield call(dictInteractType);
+                const interactTypeList = Object.keys(data).map(item => {
+                    return {
+                        key: data[item],
+                        value: item
+                    }
+                })
+                if (code === 200) {
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            interactTypeList: interactTypeList || []
+                        },
+                    });
+                } else {
+                    openNotificationWithIcon('info', message);
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            interactTypeList: []
+                        },
+                    });
+                }
+
+            } catch (error) {
+                yield put({
+                    type: 'save',
+                    payload: {
+                        interactTypeList: [],
                     },
                 });
             }

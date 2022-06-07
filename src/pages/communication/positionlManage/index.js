@@ -18,14 +18,17 @@ const PositionlManage = function () {
   const saveModelsState = (payload) => dispatch({ type: 'positionlManage/save', payload });
   const dictPage = (payload) => dispatch({ type: 'positionlManage/dictPage', payload });
   const dictDel = (payload) => dispatch({ type: 'positionlManage/dictDel', payload });
-  const dictTaskStates = (payload) => dispatch({ type: 'positionlManage/dictTaskStates', payload });
+  const dictInteractStates = (payload) => dispatch({ type: 'positionlManage/dictInteractStates', payload });
+  const dictInteractType = (payload) => dispatch({ type: 'positionlManage/dictInteractType', payload });
 
-  const { total, params, ruleData, taskStates } = useSelector(
+  const { total, params, ruleData, interactList, interactTypeList } = useSelector(
     (models) => models.positionlManage,
   );
 
   const [selForm] = Form.useForm();
   useEffect(() => {
+    dictInteractStates()
+    dictInteractType()
     dictPage();
   }, [params]);
 
@@ -40,8 +43,8 @@ const PositionlManage = function () {
     },
     {
       title: '设备',
-      dataIndex: 'interactName',
-      key: 'interactName',
+      dataIndex: 'machineId',
+      key: 'machineId',
       width: 200,
       flag: true,
     },
@@ -58,7 +61,11 @@ const PositionlManage = function () {
     {
       title: '数据类型',
       dataIndex: 'interactType',
-      key: 'interactType'
+      key: 'interactType',
+      render: (text) =>{
+        const showState = interactTypeList.find(item=> text === item.key)
+        return showState?.value
+      },
     },
     {
       title: '期望值',
@@ -73,10 +80,20 @@ const PositionlManage = function () {
     },
     {
       title: '数据流向',
-      dataIndex: 'taskState',
-      key: 'taskState',
+      dataIndex: 'interactTypeEnum',
+      key: 'interactTypeEnum',
       flag: true,
       width: 100,
+      type: 'select',
+      render: (text) =>{
+        const showState = interactList.find(item=> text === item.key)
+        return showState?.value
+      },
+      showOption:{
+        key: 'key',
+        content: 'value'
+      },
+      data: interactList
     },
     {
       title: '操作',
@@ -188,6 +205,8 @@ const PositionlManage = function () {
       </div>
       <ModalFrom
         saveModelsState={saveModelsState}
+        interactTypeList={interactTypeList}
+        interactList={interactList}
       />
     </div>
   );

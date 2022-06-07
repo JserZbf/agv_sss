@@ -29,11 +29,18 @@ const PoolManage = function ({}) {
   );
 
   const dataKey = [{
-    key: 'taskCode',
-    value: '任务编号'
-  },{
     key: 'priority',
     value: '优先级'
+  },{
+    key: 'agvState',
+    value: 'agv状态',
+    render:(text)=> {
+      return <Steps className='stepsContent' progressDot current={1} size={'small'}>
+      <Step title="Finished" description="." />
+      <Step title="In Progress" description="." />
+      <Step title="Waiting" description="." />
+    </Steps>
+    }
   },{
     key: 'taskType',
     value: '任务类型',
@@ -54,22 +61,8 @@ const PoolManage = function ({}) {
     key: 'expectedAgvModelName',
     value: 'agv类型'
   },{
-    key: 'agvState',
+    key: 'expectedAgvModelName',
     value: '执行agv',
-    // render:(text)=> {
-    //   const showState = stateList.find(item=> text === item.key)
-    //   return showState?.value
-    // }
-  },{
-    key: 'agvState',
-    value: 'agv状态',
-    render:(text)=> {
-      return <Steps progressDot current={1} direction="vertical">
-      <Step title="Finished" description="This is a description." />
-      <Step title="In Progress" description="This is a description." />
-      <Step title="Waiting" description="This is a description." />
-    </Steps>
-    }
   }];
 
   const [selForm] = Form.useForm();
@@ -181,13 +174,13 @@ const PoolManage = function ({}) {
           </div>
           <p className={styles.splitLine} />
           <div className={styles.cardStyles}>
-          <Row justify="space-around" gutter={16}>
+          <Row justify="start" gutter={16}>
             {
               ruleData.map((item, index)=> {
-                return <Col span={8}>
+                return <Col>
                   <div className={styles.cardItemsStyles}>
                    <Card
-                    title={`站台${index + 1}`}
+                    title={item.taskCode}
                     headStyle={{background: '#6290fa', borderRadius: '20px 20px 0 0', color: '#fff'}}
                     style={{borderRadius: '20px'}}
                       actions={[
@@ -214,12 +207,11 @@ const PoolManage = function ({}) {
                       ]}
                     >
                       <List
-                        bordered={false}
                         size={'small'}
                         dataSource={dataKey}
                         renderItem={list => (
-                          <List.Item>
-                            <div style={{display: 'flex',width: '100%', justifyContent: 'space-between'}}>
+                          <List.Item className={(list['key']==='priority' || list['key']==='agvState') ? styles.listItemAllcontent:styles.listItemcontent}>
+                            <div>
                               <span className={styles.listItemTitle}>{list['value']}:</span> {
                                 list.render ? list.render(item[list['key']]) : item[list['key']]
                               }

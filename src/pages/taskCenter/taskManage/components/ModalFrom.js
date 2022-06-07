@@ -73,7 +73,7 @@ const EditModal = ({ saveModelsState, agvModelList, taskTypeList }) => {
         onFinish={onFinish}
       >
         <Form.Item name="taskType" label="任务类型" rules={[{ required: true }]}>
-          <Select>
+          <Select placeholder="请选择任务类型">
             {
               taskTypeList && taskTypeList.map(item=> {
                 return <Select.Option value={item.key}>{item.value}</Select.Option>
@@ -83,7 +83,7 @@ const EditModal = ({ saveModelsState, agvModelList, taskTypeList }) => {
         </Form.Item>
         
         <Form.Item name="expectedAgvModelId" label="AGV类型" rules={[{ required: true }]}>
-          <Select>
+          <Select placeholder="请选择AGV类型">
             {
               agvModelList && agvModelList.map(item=> {
                 return <Select.Option value={item.key}>{item.value}</Select.Option>
@@ -92,7 +92,7 @@ const EditModal = ({ saveModelsState, agvModelList, taskTypeList }) => {
           </Select>
         </Form.Item>
         <Form.Item label="起点" rules={[{ required: true }]}>
-          <Select value={startPositionInfo} onSelect={(value, info)=>{
+          <Select  placeholder="请选择起点" value={startPositionInfo} onSelect={(value, info)=>{
              setStartPositionInfo({
               value,
               label: info.children
@@ -106,7 +106,7 @@ const EditModal = ({ saveModelsState, agvModelList, taskTypeList }) => {
           </Select>
         </Form.Item>
         <Form.Item label="终点" rules={[{ required: true }]}>
-          <Select value={endPositionInfo} onSelect={(value, info)=>{
+          <Select placeholder="请选择终点" value={endPositionInfo} onSelect={(value, info)=>{
              setEndPositionInfo({
               value,
               label: info.children
