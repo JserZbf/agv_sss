@@ -200,6 +200,13 @@ export default {
                         yield put({type: 'dicPositionList',payload: {
                             mapId: findUsedMapInfo[0].id,
                         }});
+                    } else {
+                        yield put({
+                            type: 'save',
+                            payload: {
+                                agvPositonList:[]
+                            },
+                        });
                     }
                     
                 } else {
@@ -211,7 +218,7 @@ export default {
         *dicPositionList({ payload }, { call, put }) {
             try {
                 const { code, data, message } = yield call(dicPositionList, {...payload});
-                
+
                 const agvPositonList = data.map(item => {
                     return {
                         key: item.id,

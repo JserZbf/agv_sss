@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Table, Button, Popconfirm, Switch, Form, Upload } from 'antd';
-import { Link} from 'umi';
+import { Link, history } from 'umi';
 import moment from 'moment';
 import Iconfont from 'components/Iconfont';
 import AutoScale from 'components/AutoScale';
@@ -25,6 +25,7 @@ const MapList = function ({ windowInnerHeight }) {
   const dictPage = (payload) => dispatch({ type: 'mapList/dictPage', payload });
   const dictDel = (payload) => dispatch({ type: 'mapList/dictDel', payload });
   const dictUpState = (payload) => dispatch({ type: 'mapList/dictUpState', payload });
+  const dictImport = (payload) => dispatch({ type: 'mapList/dictImport', payload });
 
   const { params, total, ruleData } = useSelector(
     (models) => models.mapList,
@@ -136,12 +137,10 @@ const MapList = function ({ windowInnerHeight }) {
     selForm.validateFields().then((values) => {
       const valueForm = {};
       for (const [key, value] of Object.entries(values)) {
-        if (value !== '') {
-          valueForm[key] = value;
-        }
+        valueForm[key] = value;
       }
       saveModelsState({
-        params: { ...valueForm },
+        params: { ...params, ...valueForm },
       });
     });
   };
@@ -214,7 +213,7 @@ const MapList = function ({ windowInnerHeight }) {
               pagination={{total}}
               onChange={(pagination)=> {
                 saveModelsState({
-                  params: { ...pagination },
+                  params: { ...params, ...pagination },
                 });
               }}
               rowKey={(record) => record.id}

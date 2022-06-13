@@ -213,6 +213,13 @@ export default {
                         yield put({type: 'dicPositionList',payload: {
                             mapId: findUsedMapInfo[0].id,
                         }});
+                    } else {
+                        yield put({
+                            type: 'save',
+                            payload: {
+                                agvPositonList:[]
+                            },
+                        });
                     }
                     
                 } else {

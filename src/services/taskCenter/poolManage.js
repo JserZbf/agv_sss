@@ -1,7 +1,7 @@
 import http from '../http';
 
 export const dictPage = (params) => {
-    return http.get('/api/sss-agv-service/RunTimeTask/getAll', params);
+    return http.post('/api/sss-agv-service/RunTimeTask/getAll', params);
 };
 export const dictDel = (params) => {
     return http.delete('/api/sss-agv-service/Task/delete', params);
@@ -22,10 +22,10 @@ export const dictAgvModel = (params) => {
     return http.post('/api/sss-agv-service/AgvModel/getAll',params);
 };
 
-export const dictMapList = (params) => {
-    return http.get('/api/sss-agv-service/Map/getAll', params);
-};
-
 export const dictTaskType = (params) => {
     return http.get('/api/sss-agv-service/Task/taskTypeEnumMap',params);
+};
+
+export const dictCompare = (params) => {
+    return http.get('/api/sss-agv-service/Task/compareEnumMap',params);
 };

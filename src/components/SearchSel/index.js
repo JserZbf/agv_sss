@@ -63,7 +63,9 @@ const SearchSel = ({ columns, selForm, onFinishSel, params }) => {
         <Form
           style={{ width: '100%' }}
           name="basic"
-          layout="inline"
+          layout='horizontal'
+          labelCol={{ span: 6 }}
+          className={styles.formStyle}
           autoComplete="off"
           form={selForm}
         >

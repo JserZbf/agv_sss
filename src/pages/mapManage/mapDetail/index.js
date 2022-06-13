@@ -7,7 +7,6 @@ import BreadcrumbStyle from 'components/breadcrumbStyle';
 import {
   EditOutlined,
   PlusOutlined,
-  DownloadOutlined,
   BgColorsOutlined,
   UploadOutlined,
   RedoOutlined,
@@ -31,9 +30,9 @@ const MapDetail = function (props) {
   const dictTreeData = (payload) => dispatch({ type: 'mapDetail/dictTreeData', payload });
   const dictgetMapData = (payload) => dispatch({ type: 'mapDetail/dictgetMapData', payload });
   const dictAgvModel = (payload) => dispatch({ type: 'mapDetail/dictAgvModel', payload });
-  const dictImport = (payload) => dispatch({ type: 'mapDetail/dictImport', payload });
+  const dictOperationList = (payload) => dispatch({ type: 'mapDetail/dictOperationList', payload });
 
-  const { treeData, drawData , textData} = useSelector(
+  const { treeData, drawData , textData, mapdata} = useSelector(
     (models) => models.mapDetail,
   );
   
@@ -49,6 +48,7 @@ const MapDetail = function (props) {
     })()
     
     dictAgvModel()
+    dictOperationList()
     
   }, [mapId]);
 
@@ -189,7 +189,11 @@ const MapDetail = function (props) {
                 icon={<UploadOutlined />}
                 className="addButton"
                 onClick={() => {
-                  exportResult(JSON.stringify(textData))
+                  const exportData = {
+                    treeData: textData,
+                    mapData: JSON.parse(mapdata)
+                  }
+                  exportResult(JSON.stringify(exportData))
                 }}
               >
                 导出地图

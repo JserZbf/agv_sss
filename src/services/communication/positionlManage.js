@@ -24,3 +24,7 @@ export const dictInteractStates = () => {
 export const dictInteractType = () => {
     return http.get('/api/sss-agv-service/Interact/interactTypeMap');
 };
+
+export const dictInteract = (params) => {
+    return http.post('/api/sss-agv-service/Interact/dispatchInteract', params);
+};

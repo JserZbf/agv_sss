@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, Card, Popconfirm } from 'antd';
+import { List, Card, Popconfirm, Tag } from 'antd';
 import { useSelector, useDispatch } from 'dva';
 import {
     DeploymentUnitOutlined,
@@ -21,6 +21,34 @@ const EditModal = ({ saveModelsState, item, agvModelList }) => {
     (models) => models.vehicleList,
   );
 
+  const getStateColor = (key) => {
+    let colorValue
+    switch(key) {
+      case 'LOW_ELECTRICITY':
+        colorValue = 'orange'
+        break;
+      case 'CHARGING':
+        colorValue = 'green'
+        break;
+      case 'EXECUTING':
+        colorValue = 'cyan'
+        break;
+      case 'DISCONNECT':
+        colorValue = 'volcano'
+        break;
+      case 'FREE':
+        colorValue = 'blue'
+        break;
+      case 'MISSING':
+        colorValue = 'purple'
+        break;
+      case 'CLOSED':
+        colorValue = 'red'
+        break;
+    }
+    return colorValue
+  }
+
   const dataKey = [{
     key: 'agvModelId',
     value: '车辆类型',
@@ -33,14 +61,17 @@ const EditModal = ({ saveModelsState, item, agvModelList }) => {
     value: '状态',
     render:(text)=> {
       const showState = stateList.find(item=> text === item.key)
-      return showState?.value
+      return <Tag color={getStateColor(text)}>{showState?.value}</Tag>
     }
   },{
     key: 'lowBatteryStandard',
     value: '电量'
   },{
     key: 'maxSpeed',
-    value: '加速度'
+    value: '最大速度',
+    render:(text)=> {
+     return <span>{text} m/s</span>
+    }
   },{
     key: 'positionName',
     value: '所在点'

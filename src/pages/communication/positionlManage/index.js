@@ -9,9 +9,11 @@ import {
   FormOutlined,
   DeleteOutlined,
   PlusOutlined,
+  HighlightOutlined
 } from '@ant-design/icons';
 import styles from './index.less';
 import ModalFrom from './components/ModalFrom';
+import InteractFrom from './components/InteractFrom';
 
 const PositionlManage = function () {
   const dispatch = useDispatch();
@@ -50,8 +52,8 @@ const PositionlManage = function () {
     },
     {
       title: '描述',
-      dataIndex: 'priority',
-      key: 'priority',
+      dataIndex: 'description',
+      key: 'description',
     },
     {
       title: '点位',
@@ -105,6 +107,21 @@ const PositionlManage = function () {
         return (
           <div className="operate">
              <Button
+              icon={<HighlightOutlined />}
+              size="small"
+              className="detailsButton"
+              onClick={() => {
+                saveModelsState({
+                  interactVisible: true,
+                  storeData: {
+                    ...rec,
+                  },
+                });
+              }}
+            >
+              下发
+            </Button> 
+            <Button
               icon={<FormOutlined />}
               size="small"
               className="editButton"
@@ -142,12 +159,10 @@ const PositionlManage = function () {
     selForm.validateFields().then((values) => {
       const valueForm = {};
       for (const [key, value] of Object.entries(values)) {
-        if (value !== '') {
           valueForm[key] = value;
-        }
       }
       saveModelsState({
-        params: { ...valueForm },
+        params: { ...params, ...valueForm },
       });
     });
   };
@@ -181,7 +196,6 @@ const PositionlManage = function () {
         <p className={styles.splitLine} />
         <div className={styles.tableBox}>
           <div className={styles.searchForm}>
-            {/* ↓该组件自行实现，现有组件有bug */}
             <SearchSel
               selForm={selForm}
               columns={columns}
@@ -195,7 +209,7 @@ const PositionlManage = function () {
               pagination={{total}}
               onChange={(pagination)=> {
                 saveModelsState({
-                  params: { ...pagination },
+                  params: { ...params, ...pagination },
                 });
               }}
               rowKey={(record) => record.id}
@@ -204,6 +218,11 @@ const PositionlManage = function () {
         </div>
       </div>
       <ModalFrom
+        saveModelsState={saveModelsState}
+        interactTypeList={interactTypeList}
+        interactList={interactList}
+      />
+      <InteractFrom
         saveModelsState={saveModelsState}
         interactTypeList={interactTypeList}
         interactList={interactList}

@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Card, Form, List, Popconfirm, Row, Col, Steps } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Card, Form, List, Popconfirm, Row, Col, Steps, Select } from 'antd';
 import SearchSel from 'components/SearchSel';
 import AutoScale from 'components/AutoScale';
 import { useSelector, useDispatch } from 'dva';
@@ -20,13 +20,15 @@ const PoolManage = function ({}) {
   const dicPause = (payload) => dispatch({ type: 'poolManage/dicPause', payload });
   const dictTaskStates = (payload) => dispatch({ type: 'poolManage/dictTaskStates', payload });
   const dictAgvModel = (payload) => dispatch({ type: 'poolManage/dictAgvModel', payload });
-  const dictMapList = (payload) => dispatch({ type: 'poolManage/dictMapList', payload });
   const dictTaskType = (payload) => dispatch({ type: 'poolManage/dictTaskType', payload });
   const dictStopTime = (payload) => dispatch({ type: 'poolManage/dictStopTime', payload });
+  const dictCompare = (payload) => dispatch({ type: 'poolManage/dictCompare', payload });
 
-  const { ruleData, taskStates, agvModelList,taskTypeList } = useSelector(
+  const { ruleData, taskStates, agvModelList, taskTypeList, priorityList } = useSelector(
     (models) => models.poolManage,
   );
+
+  const [compareValue, setCompareValue] = useState(priorityList[0]?.key);
 
   const dataKey = [{
     key: 'priority',
@@ -68,13 +70,17 @@ const PoolManage = function ({}) {
   const [selForm] = Form.useForm();
 
   useEffect(() => {
+    dictCompare()
     dictTaskType()
     dictAgvModel()
     dictTaskStates()
-    dictMapList()
     dictPage()
     return componentWillUnmount;
   }, []);
+
+  useEffect(() => {
+    setCompareValue(priorityList[0]?.key)
+  }, [priorityList]);
 
   const  componentWillUnmount = ()=> {
     dictStopTime()
@@ -87,13 +93,21 @@ const PoolManage = function ({}) {
       key: 'taskCode',
       flag: true,
     },
-    
     {
-      title: '优先级',
-      dataIndex: 'priority',
-      key: 'priority',
+      title: '任务状态',
+      dataIndex: 'taskState',
+      key: 'taskState',
       flag: true,
-      type: 'number'
+      type: 'select',
+      render: (text) =>{
+        const showState = taskStates.find(item=> text === item.key)
+        return showState?.value
+      },
+      showOption:{
+        key: 'key',
+        content: 'value'
+      },
+      data: taskStates
     },
     {
       title: '任务类型',
@@ -126,22 +140,19 @@ const PoolManage = function ({}) {
         content: 'value'
       },
       data: agvModelList
-    },
-    {
-      title: '任务状态',
-      dataIndex: 'taskState',
-      key: 'taskState',
+    },{
+      title: '优先级',
+      dataIndex: 'priority',
+      key: 'priority',
       flag: true,
-      type: 'select',
-      render: (text) =>{
-        const showState = taskStates.find(item=> text === item.key)
-        return showState?.value
-      },
-      showOption:{
-        key: 'key',
-        content: 'value'
-      },
-      data: taskStates
+      type: 'number',
+      addonBefore: <Select onChange={(value)=>{setCompareValue(value)}} defaultValue={priorityList[0]} className="select-before">
+        {
+          priorityList && priorityList.map(item=> {
+            return <Option value={item.key}>{item.value}</Option>
+          })
+        }
+      </Select>
     },
   ];
 
@@ -151,6 +162,10 @@ const PoolManage = function ({}) {
       for (const [key, value] of Object.entries(values)) {
         if (value !== '') {
           valueForm[key] = value;
+        }
+        if (key === 'priority' && value) {
+          valueForm[key] = value;
+          valueForm['compare'] = compareValue;
         }
       }
       saveModelsState({

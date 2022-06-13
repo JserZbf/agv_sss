@@ -91,8 +91,8 @@ const EditModal = ({ saveModelsState, agvModelList, taskTypeList }) => {
             }
           </Select>
         </Form.Item>
-        <Form.Item label="起点" rules={[{ required: true }]}>
-          <Select  placeholder="请选择起点" value={startPositionInfo} onSelect={(value, info)=>{
+        <Form.Item name="startPositionId" label="起点" rules={[{ required: true }]}>
+          <Select placeholder="请选择起点" value={startPositionInfo} onSelect={(value, info)=>{
              setStartPositionInfo({
               value,
               label: info.children
@@ -105,7 +105,7 @@ const EditModal = ({ saveModelsState, agvModelList, taskTypeList }) => {
             }
           </Select>
         </Form.Item>
-        <Form.Item label="终点" rules={[{ required: true }]}>
+        <Form.Item name="endPositionId" label="终点" rules={[{ required: true }]}>
           <Select placeholder="请选择终点" value={endPositionInfo} onSelect={(value, info)=>{
              setEndPositionInfo({
               value,

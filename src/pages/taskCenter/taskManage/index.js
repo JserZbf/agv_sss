@@ -197,8 +197,14 @@ const TaskManage = function () {
               onConfirm={() => {
                 dictDel({ id: rec.id });
               }}
+              disabled={rec.taskState === 'FINISHED' || rec.taskState === 'CANCEL'}
             >
-              <Button icon={<DeleteOutlined />} size="small" className="delButton">
+              <Button
+                disabled={rec.taskState === 'FINISHED' || rec.taskState === 'CANCEL'}
+                icon={<DeleteOutlined />}
+                size="small"
+                className={(rec.taskState === 'FINISHED' || rec.taskState === 'CANCEL') ? "disableButton" : 'delButton'}
+              >
                 删除
               </Button>
             </Popconfirm>
@@ -212,17 +218,14 @@ const TaskManage = function () {
     selForm.validateFields().then((values) => {
       const valueForm = {};
       for (const [key, value] of Object.entries(values)) {
-        if (value !== '') {
-          valueForm[key] = value;
-        }
+        valueForm[key] = value;
         if (key === 'priority' && value) {
           valueForm[key] = value;
           valueForm['compare'] = compareValue;
         }
       }
-
       saveModelsState({
-        params: { ...valueForm },
+        params: { ...params, ...valueForm },
       });
     });
   };
@@ -281,7 +284,7 @@ const TaskManage = function () {
               pagination={{total}}
               onChange={(pagination)=> {
                 saveModelsState({
-                  params: { ...pagination },
+                  params: { ...params, ...pagination },
                 });
               }}
               rowSelection={{ ...rowSelection }}

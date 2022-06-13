@@ -30,10 +30,9 @@ const SystemLog = function ({windowInnerHeight}) {
 
   const searchForm = [
     {
-      title: '时间',
+      title: '时间区间',
       dataIndex: 'time',
       key: 'time',
-      width: 150,
       flag: true,
       type: 'rangePicker',
     },
@@ -41,7 +40,6 @@ const SystemLog = function ({windowInnerHeight}) {
       title: '类型',
       dataIndex: 'agvStateType',
       key: 'agvStateType',
-      width: 100,
       flag: true,
       type: 'select',
       render: (text) =>{
@@ -67,9 +65,7 @@ const SystemLog = function ({windowInnerHeight}) {
       title: '时间',
       dataIndex: 'createTime',
       key: 'createTime',
-      width: 150,
-      flag: true,
-      type: 'datePicker',
+      width: 200,
     },
     {
       title: '类型',
@@ -98,25 +94,23 @@ const SystemLog = function ({windowInnerHeight}) {
     selForm.validateFields().then((values) => {
       const valueForm = {};
       for (const [key, value] of Object.entries(values)) {
-        if (value !== '') {
-          if (key === 'time' && value) {
-            value.forEach((item, index)=> {
-              switch(index) {
-                case 0:
-                  valueForm['startTime'] = moment(item).format('YYYY-MM-DD HH:mm:ss');
-                  break;
-                case 1:
-                  valueForm['endTime'] = moment(item).format('YYYY-MM-DD HH:mm:ss');
-                  break;
-              }
-            })
-          } else {
-            valueForm[key] = value
-          }
+        if (key === 'time' && value) {
+          value.forEach((item, index)=> {
+            switch(index) {
+              case 0:
+                valueForm['startTime'] = moment(item).format('YYYY-MM-DD HH:mm:ss');
+                break;
+              case 1:
+                valueForm['endTime'] = moment(item).format('YYYY-MM-DD HH:mm:ss');
+                break;
+            }
+          })
+        } else {
+          valueForm[key] = value
         }
       }
       saveModelsState({
-        params: { ...valueForm },
+        params: { ...params, ...valueForm },
       });
     });
   };
@@ -148,7 +142,7 @@ const SystemLog = function ({windowInnerHeight}) {
 
   return (
     <div className={styles.container}>
-      <BreadcrumbStyle aheadTitle={[{ title: '系统改中心' }]} currentTitle="系统日志" />
+      <BreadcrumbStyle aheadTitle={[{ title: '系统中心' }]} currentTitle="系统日志" />
       <div className={styles.middleBox}>
         <div className={styles.middleBoxButton}>
           <div className={styles.listIcon}>
@@ -185,7 +179,7 @@ const SystemLog = function ({windowInnerHeight}) {
               pagination={{total}}
               onChange={(pagination)=> {
                 saveModelsState({
-                  params: { ...pagination },
+                  params: { ...params, ...pagination },
                 });
               }}
               rowKey={(record) => record.id}

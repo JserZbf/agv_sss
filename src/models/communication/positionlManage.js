@@ -1,6 +1,6 @@
 
 import {
-    dictPage, dictAdd, dictUpdate, dictDel, dictInteractStates, dictInteractType
+    dictPage, dictAdd, dictUpdate, dictDel, dictInteractStates, dictInteractType, dictInteract
 } from 'services/communication/positionlManage';
 import { notification } from 'antd'
 
@@ -16,6 +16,7 @@ export default {
     state: {
         checkout: true,
         visible: false,
+        interactVisible: false,
         isAdd: true,
         editId: "",
         ruleData: [],
@@ -26,7 +27,7 @@ export default {
         storeData: [],
         total: "",
         interactList: [],
-        interactTypeList: []
+        interactTypeList: [],
     },
     effects: {
         *dictPage({}, { call, put, select }) {
@@ -195,6 +196,28 @@ export default {
                     payload: {
                         interactTypeList: [],
                     },
+                });
+            }
+        },
+        *dictInteract({ payload }, { call, put }) {
+            try {
+                const { code, message } = yield call(dictInteract, {...payload});
+                if (code === 200) {
+                    openNotificationWithIcon('success', '修改成功');
+                } else {
+                    openNotificationWithIcon('info', message);
+                };
+
+                yield put({
+                    type: 'save',
+                    payload: {
+                        interactVisible: false,
+                    },
+                });
+                yield put({ type: 'dictPage' });
+            } catch (error) {
+                yield put({
+                    type: 'save',
                 });
             }
         }

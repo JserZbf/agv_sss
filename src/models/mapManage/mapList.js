@@ -1,6 +1,6 @@
 
 import {
-    dictPage, dictAdd, dictUpdate, dictDel, dictUpState
+    dictPage, dictAdd, dictUpdate, dictDel, dictUpState, dictImport
 } from 'services/mapManage/mapList';
 import { notification } from 'antd'
 
@@ -137,6 +137,23 @@ export default {
                 });
             }
         },
+        *dictImport({ payload }, { call, put }) {
+            try {
+
+                const { code, message } = yield call(dictImport, payload);
+
+                if (code === 200) {
+                    openNotificationWithIcon('success', '上传成功');
+                } else {
+                    openNotificationWithIcon('info', message);
+                }
+                yield put({type: 'dictPage'});
+            } catch (error) {
+                yield put({
+                    type: 'save',
+                });
+            }
+        }
         
     },
     reducers: {

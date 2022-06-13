@@ -18,3 +18,7 @@ export const dictDel = (params) => {
 export const dictUpState = (params) => {
     return http.put('/api/sss-agv-service/Map/updateState', params);
 };
+
+export const dictImport = (params) => {
+    return http.post('/api/sss-agv-service/Map/importMap', params);
+};

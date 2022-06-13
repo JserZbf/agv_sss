@@ -10,7 +10,7 @@ import {
     dictSetMapData,
     dictgetMapData,
     dictAgvModel,
-    dictImport
+    dictOperationList
 } from 'services/mapManage/mapDetail';
 import { notification } from 'antd';
 
@@ -41,6 +41,7 @@ export default {
         treeData: [], // 树形结构
         textData: {}, // 导出信息
         agvModelList: [],   // 车辆类型下拉列表
+        operationList: []
     },
     effects: {
 
@@ -132,16 +133,37 @@ export default {
                         childNode.push({
                             hierarchy: 'action',
                             title: '起点动作',
+                            actionList: item.operationsWhenStart.map(item=> {
+                                return {
+                                    key: item,
+                                    value: item
+                                }
+                            }),
+                            itemInfo: item,
                             key: item.operationsWhenStart.length ? item.operationsWhenStart.toString() : Math.random(),
                         })
                         childNode.push({
                             hierarchy: 'action',
                             title: '路径动作',
+                            actionList: item.operationsWhenPass.map(item=> {
+                                return {
+                                    key: item,
+                                    value: item
+                                }
+                            }),
+                            itemInfo: item,
                             key: item.operationsWhenPass.length ? item.operationsWhenPass.toString() : Math.random()
                         })
                         childNode.push({
                             hierarchy: 'action',
                             title: '终点动作',
+                            actionList: item.operationsWhenEnd.map(item=> {
+                                return {
+                                    key: item,
+                                    value: item
+                                }
+                            }),
+                            itemInfo: item,
                             key: item.operationsWhenEnd.length ? item.operationsWhenEnd.toString() : Math.random(),
                         })
                         return {
@@ -165,16 +187,37 @@ export default {
                         childNode.push({
                             hierarchy: 'action',
                             title: '起点动作',
+                            actionList: item.operationsWhenStart.map(item=> {
+                                return {
+                                    key: item,
+                                    value: item
+                                }
+                            }),
+                            itemInfo: item,
                             key: item.operationsWhenStart.length ? item.operationsWhenStart.toString() : Math.random(),
                         })
                         childNode.push({
                             hierarchy: 'action',
                             title: '路径动作',
+                            actionList: item.operationsWhenPass.map(item=> {
+                                return {
+                                    key: item,
+                                    value: item
+                                }
+                            }),
+                            itemInfo: item,
                             key: item.operationsWhenPass.length ? item.operationsWhenPass.toString() : Math.random()
                         })
                         childNode.push({
                             hierarchy: 'action',
                             title: '终点动作',
+                            actionList: item.operationsWhenEnd.map(item=> {
+                                return {
+                                    key: item,
+                                    value: item
+                                }
+                            }),
+                            itemInfo: item,
                             key: item.operationsWhenEnd.length ? item.operationsWhenEnd.toString() : Math.random(),
                         })
                         return {
@@ -415,24 +458,38 @@ export default {
                 });
             }
         },
-        *dictImport({ payload }, { call, put, select }) {
+        *dictOperationList({}, { call, put }) {
             try {
-
-                const { mapId } = yield select((state) => state.mapDetail);
-
-                const { code, message } = yield call(dictImport, payload);
-
+                const { code, data, message } = yield call(dictOperationList, {current: 1, pageSize: 100});
+                const operationList = data?.records.map(item => {
+                    return {
+                        key: item.id,
+                        value: item.agvModelName
+                    }
+                })
                 if (code === 200) {
-                    openNotificationWithIcon('success', '上传成功');
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            operationList: operationList || []
+                        },
+                    });
                 } else {
                     openNotificationWithIcon('info', message);
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            operationList: operationList || []
+                        },
+                    });
                 }
-                yield put({type: 'dictTreeData',payload: {
-                    mapId,
-                }});
+
             } catch (error) {
                 yield put({
                     type: 'save',
+                    payload: {
+                        agvModelList: [],
+                    },
                 });
             }
         }

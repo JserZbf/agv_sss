@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Form, Modal, Input, Select } from 'antd';
 import { useSelector, useDispatch } from 'dva';
 
+const { TextArea } = Input;
+
 const EditModal = ({ saveModelsState, interactTypeList, interactList }) => {
 
   const dispatch = useDispatch();  
@@ -51,7 +53,8 @@ const EditModal = ({ saveModelsState, interactTypeList, interactList }) => {
       payload = {
         ...payload,
         id: storeData?.id,
-        taskCode: storeData?.taskCode
+        taskCode: storeData?.taskCode,
+        interactValue: storeData?.interactValue
       }
     }
     isAdd ? dictAdd({...payload}) : dictUpdate({...payload})
@@ -104,8 +107,11 @@ const EditModal = ({ saveModelsState, interactTypeList, interactList }) => {
         <Form.Item name="expectedValue" label="期望值" rules={[{ required: true }]}>
           <Input autoComplete="off" placeholder="请输入期望值" />
         </Form.Item>
-        <Form.Item name="interactValue" label="交互值" rules={[{ required: true }]}>
+        {/* <Form.Item name="interactValue" label="交互值" rules={[{ required: true }]}>
           <Input autoComplete="off" placeholder="请输入交互值" />
+        </Form.Item> */}
+        <Form.Item name="description" label="描述">
+          <TextArea rows={4} placeholder="请输入描述"/>
         </Form.Item>
       </Form>
     </Modal>

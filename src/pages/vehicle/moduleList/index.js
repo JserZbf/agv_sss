@@ -109,12 +109,10 @@ const VehicleModuleList = function ({ windowInnerHeight }) {
     selForm.validateFields().then((values) => {
       const valueForm = {};
       for (const [key, value] of Object.entries(values)) {
-        if (value !== '') {
-          valueForm[key] = value;
-        }
+        valueForm[key] = value;
       }
       saveModelsState({
-        params: { ...valueForm },
+        params: { ...params, ...valueForm },
       });
     });
   };
@@ -161,7 +159,7 @@ const VehicleModuleList = function ({ windowInnerHeight }) {
               pagination={{total}}
               onChange={(pagination)=> {
                 saveModelsState({
-                  params: { ...pagination },
+                  params: { ...params, ...pagination },
                 });
               }}
               rowKey={(record) => record.id}

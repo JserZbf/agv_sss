@@ -8,10 +8,6 @@ export const dictMapList = (params) => {
     return http.get(`/api/sss-agv-service/Map/exportMap/${params.mapId}`);
 };
 
-export const dictImport = (params) => {
-    return http.post('/api/sss-agv-service/Map/importMap', params);
-};
-
 export const dictAdd = (params) => {
     return http.post('/api/sss-agv-service/Position/save', params);
 };
@@ -48,3 +44,9 @@ export const dictSetMapData = (params) => {
 export const dictAgvModel = (params) => {
     return http.post('/api/sss-agv-service/AgvModel/getAll',params);
 };
+
+
+export const dictOperationList = (params) => {
+    return http.post('/api/sss-agv-service/Operation/getAll',params);
+};
+

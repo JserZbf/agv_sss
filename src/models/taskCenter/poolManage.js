@@ -1,6 +1,11 @@
 
 import {
-    dictPage, dictDel, dictTaskStates, dictAgvModel, dictMapList, dictTaskType
+    dictPage,
+    dictDel,
+    dictTaskStates,
+    dictAgvModel,
+    dictTaskType,
+    dictCompare
 } from 'services/taskCenter/poolManage';
 import { notification } from 'antd'
 
@@ -19,12 +24,13 @@ export default {
         ruleData: [],
         params: {
             current: 1,
-            pageSize: 10
+            pageSize: 999
         },
         taskStates: [],
         agvModelList: [],
         taskTypeList: [],
         stateList: [],  //状态下拉列表
+        priorityList: []  // 优先级下拉
     },
     effects: {
         *dictPage({}, { call, put, select }) {
@@ -171,23 +177,6 @@ export default {
                 });
             }
         },
-        *dictMapList({}, { call, put }) {
-            try {
-                const { code, data, message } = yield call(dictMapList, {current: 1, pageSize: 999});
-                if (code === 200) {      
-                    const findUsedMapInfo = data.filter(item=> item.used)
-                    if (findUsedMapInfo.length) {
-                        yield put({type: 'dicPositionList',payload: {
-                            mapId: findUsedMapInfo[0].id,
-                        }});
-                    }
-                    
-                } else {
-                    openNotificationWithIcon('info', message);
-                }
-
-            } catch (error) {}
-        },
         *dictTaskType({}, { call, put }) {
             try {
                 const { code, data, message } = yield call(dictTaskType);
@@ -262,6 +251,34 @@ export default {
                     type: 'save',
                 });
             }
+        },
+        *dictCompare({}, { call, put }) {
+            try {
+                const { code, data, message } = yield call(dictCompare);
+                const priorityList = Object.keys(data).map(item => {
+                    return {
+                        key: data[item],
+                        value: item
+                    }
+                })
+                if (code === 200) {
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            priorityList: priorityList || []
+                        },
+                    });
+                } else {
+                    openNotificationWithIcon('info', message);
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            taskTypeList: []
+                        },
+                    });
+                }
+
+            } catch (error) {}
         },
     },
     reducers: {

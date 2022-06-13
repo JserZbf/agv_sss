@@ -155,11 +155,11 @@ const DrawBox = ({  backImgUrl, mapId, dictRelationDelete,saveModelsState,saveMa
         const nodeList = data.cells.filter((item)=> item.shape !== 'edge')
         const edgeList = data.cells.filter((item)=> item.shape === 'edge')
         nodeList.forEach((item, index)=> {
-          const dataIndex = drawData.nodeList.findIndex(nodeItem=> nodeItem.id === item.params.id)
+          const dataIndex = drawData.nodeList.findIndex(nodeItem=> nodeItem.id === item.params?.id)
           dataIndex === -1 && data.cells.splice(index,1)   
         })
         edgeList.forEach((item, index)=> {
-          const dataIndex = drawData.edgesList.findIndex(nodeItem=> nodeItem.id === item.params.edgesId)
+          const dataIndex = drawData.edgesList.findIndex(nodeItem=> nodeItem.id === item.params?.edgesId)
           dataIndex === -1 && data.cells.splice(index+nodeList.length,1)   
         })
         newGraph.fromJSON({

@@ -69,12 +69,10 @@ const VehicleList = function () {
     selForm.validateFields().then((values) => {
       const valueForm = {};
       for (const [key, value] of Object.entries(values)) {
-        if (value !== '') {
-          valueForm[key] = value;
-        }
+        valueForm[key] = value;
       }
       saveModelsState({
-        params: { ...valueForm },
+        params: { ...params, ...valueForm },
       });
     });
   };

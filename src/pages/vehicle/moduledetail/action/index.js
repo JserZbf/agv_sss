@@ -125,13 +125,10 @@ const VehicleAction = function ({ windowInnerHeight }) {
     selForm.validateFields().then((values) => {
       const valueForm = {};
       for (const [key, value] of Object.entries(values)) {
-        if (value !== '') {
           valueForm[key] = value;
-        }
       }
-      console.log(valueForm,'保存数据')
       saveModelsState({
-        params: { ...valueForm },
+        params: { ...params, ...valueForm },
       });
     });
   };
