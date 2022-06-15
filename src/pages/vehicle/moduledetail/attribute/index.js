@@ -28,7 +28,7 @@ const VehicleAttribute = function ({ windowInnerHeight }) {
   const columns = [
     {
       title: '序号',
-      render: (text, record, index) => <span>{index+1}</span>,
+      render: (_, record, index) => <span>{index+1}</span>,
     },
     {
       title: '模型名称',
@@ -39,7 +39,7 @@ const VehicleAttribute = function ({ windowInnerHeight }) {
       title: '控制精度',
       dataIndex: 'agvPrecision',
       key: 'agvPrecision',
-    },
+    }, 
     {
       title: 'AGV低电量标准',
       dataIndex: 'lowBatteryStandard',

@@ -203,7 +203,7 @@ const TaskManage = function () {
                 disabled={rec.taskState === 'FINISHED' || rec.taskState === 'CANCEL'}
                 icon={<DeleteOutlined />}
                 size="small"
-                className={(rec.taskState === 'FINISHED' || rec.taskState === 'CANCEL') ? "disableButton" : 'delButton'}
+                className={(rec.taskState === 'FINISHED' || rec.taskState === 'CANCEL') ? "" : 'delButton'}
               >
                 删除
               </Button>

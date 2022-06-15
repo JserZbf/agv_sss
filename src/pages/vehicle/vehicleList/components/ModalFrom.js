@@ -82,7 +82,7 @@ const EditModal = ({ saveModelsState, agvModelList, agvPositonList }) => {
         </Col>
         <Col span="12">
           <Form.Item name="acceleration" label="AGV加速度" rules={[{ required: true }]}>
-            <InputNumber autoComplete="off" addonAfter="m/s" min={0} max={1} placeholder="请输入AGV加速度" />
+            <InputNumber autoComplete="off" addonAfter="m/s" placeholder="请输入AGV加速度" />
           </Form.Item>
         </Col>
         <Col span="12">
@@ -92,12 +92,12 @@ const EditModal = ({ saveModelsState, agvModelList, agvPositonList }) => {
         </Col>
         <Col span="12">
           <Form.Item name="agvPrecision" label="控制精度" rules={[{ required: true }]}>
-            <InputNumber autoComplete="off" min={0} max={1} placeholder="请输入控制精度" />
+            <InputNumber autoComplete="off" step="0.1" min={0} max={1} placeholder="请输入控制精度" />
           </Form.Item>
         </Col>
         <Col span="12">
           <Form.Item name="lowBatteryStandard" label="AGV低电量标准" rules={[{ required: true }]}>
-            <InputNumber autoComplete="off" min={0} max={1} placeholder="请输入AGV低电量标准" />
+            <InputNumber autoComplete="off" step="0.1" min={0} max={1} placeholder="请输入AGV低电量标准" />
           </Form.Item>
         </Col>
         <Col span="12">
@@ -107,7 +107,7 @@ const EditModal = ({ saveModelsState, agvModelList, agvPositonList }) => {
         </Col>
         <Col span="12">
           <Form.Item name="maxSpeed" label="AGV的最大速度" rules={[{ required: true }]}>
-            <InputNumber autoComplete="off" addonAfter="m/s" min={0} max={1} placeholder="请输入AGV最大速度" />
+            <InputNumber autoComplete="off" addonAfter="m/s" placeholder="请输入AGV最大速度" />
           </Form.Item>
         </Col>
         <Col span="12">

@@ -78,14 +78,20 @@ const EditModal = ({ visible, saveModelsState, storeData, dictUpdate }) => {
           <Input autoComplete="off" placeholder="请输入AGV供应商名称" />
         </Form.Item>
         <Form.Item name="agvPrecision" label="控制精度" rules={[{ required: true }]}>
-          <InputNumber autoComplete="off" placeholder="请输入控制精度" min={0} max={1}/>
+          <InputNumber autoComplete="off" placeholder="请输入控制精度" step="0.1" min={0} max={1}/>
         </Form.Item>
         <Form.Item label="AGV低电量标准"  rules={[{ required: true }]} >
           <InputNumber autoComplete="off" onPressEnter={(value)=> {
               if ( 0 < value && value <= 1) {
                 setLowBatteryStandard(value)
               }
-            }}
+            }} 
+            onStep={(value)=> {
+              if ( 0 < value && value <= 1) {
+                setLowBatteryStandard(value)
+              }
+            }} 
+            step="0.1"
             min={0} max={1}
             value={lowBatteryStandard}
             placeholder="请输入AGV低电量标准"

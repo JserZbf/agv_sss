@@ -18,7 +18,7 @@ export default {
         ruleData: [],
         params: {
             current: 1,
-            pageSize: 10
+            pageSize: 999
         },
         storeData: [],
         total: "",

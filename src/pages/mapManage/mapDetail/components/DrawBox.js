@@ -66,7 +66,7 @@ const DrawBox = ({  backImgUrl, mapId, dictRelationDelete,saveModelsState,saveMa
         saveMapData()
         const deleteID = selectLine.edge?.store?.data?.params?.edgesId
         deleteID && dictRelationDelete({id: deleteID})
-
+        selectLine = null
         // confirm({
         //   title: '提示',
         //   icon: <ExclamationCircleOutlined />,
@@ -95,6 +95,7 @@ const DrawBox = ({  backImgUrl, mapId, dictRelationDelete,saveModelsState,saveMa
           saveMapData()
           const deleteID = selectNode.cell?.store?.data?.params?.id
           deleteID && dictDelete({id: deleteID})
+          selectNode = null
         }
       }
     })

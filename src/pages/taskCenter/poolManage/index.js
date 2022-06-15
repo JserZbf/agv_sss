@@ -47,7 +47,7 @@ const PoolManage = function ({}) {
     key: 'taskType',
     value: '任务类型',
     render:(text)=> {
-      const showState = agvModelList.find(item=> text === item.key)
+      const showState = taskTypeList.find(item=> text === item.key)
       return showState?.value
     }
   },{
@@ -203,21 +203,23 @@ const PoolManage = function ({}) {
                           title="是否暂停？"
                           okText="确定"
                           cancelText="取消"
+                          disabled={item.taskState === 'FINISHED' || item.taskState === 'CANCEL'}
                           onConfirm={() => {
                             dicPause({ id: item.id })
                           }}
                         >
-                          <div className={styles.cardItemsOut}><LoginOutlined />暂停</div>
+                          <div className={(item.taskState === 'FINISHED' || item.taskState === 'CANCEL') ? styles.cardDisabled : styles.cardItemsOut}><LoginOutlined />暂停</div>
                         </Popconfirm>,
                          <Popconfirm
                           title="是否删除？"
                           okText="确定"
                           cancelText="取消"
+                          disabled={item.taskState === 'FINISHED' || item.taskState === 'CANCEL'}
                           onConfirm={() => {
                             dictDel({ id: item.id });
                           }}
                         >
-                           <div className={styles.cardItemsDelete}><DeleteOutlined />删除</div>
+                           <div className={(item.taskState === 'FINISHED' || item.taskState === 'CANCEL') ? styles.cardDisabled : styles.cardItemsDelete}><DeleteOutlined />删除</div>
                         </Popconfirm>,
                       ]}
                     >

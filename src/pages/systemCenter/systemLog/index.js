@@ -66,7 +66,13 @@ const SystemLog = function ({windowInnerHeight}) {
       dataIndex: 'createTime',
       key: 'createTime',
       width: 200,
-    },
+    },   
+    {
+      title: '状态变更类型',
+      dataIndex: 'agvState',
+      key: 'agvState',
+      width: 200
+    }, 
     {
       title: '类型',
       dataIndex: 'agvStateType',
