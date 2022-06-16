@@ -15,7 +15,7 @@ export const dictUpdate = (params) => {
 };
 
 export const dictTaskStates = () => {
-    return http.get('/api/sss-agv-service/Task/taskStateEnumMap');
+    return http.get('/api/sss-agv-service/RunTimeTask/runTimeTaskStateEnumMap');
 };
 
 export const dictAgvModel = (params) => {

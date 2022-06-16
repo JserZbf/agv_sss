@@ -51,6 +51,13 @@ const PositionlManage = function () {
       flag: true,
     },
     {
+      title: '交互点位名称',
+      dataIndex: 'interactName',
+      key: 'interactName',
+      width: 200,
+      flag: true,
+    },
+    {
       title: '描述',
       dataIndex: 'description',
       key: 'description',
@@ -78,14 +85,14 @@ const PositionlManage = function () {
       title: '当前值',
       dataIndex: 'interactValue',
       key: 'interactValue',
-      width: 150
+      width: 100
     },
     {
       title: '数据流向',
       dataIndex: 'interactTypeEnum',
       key: 'interactTypeEnum',
       flag: true,
-      width: 100,
+      width: 150,
       type: 'select',
       render: (text) =>{
         const showState = interactList.find(item=> text === item.key)
@@ -159,7 +166,11 @@ const PositionlManage = function () {
     selForm.validateFields().then((values) => {
       const valueForm = {};
       for (const [key, value] of Object.entries(values)) {
+        if (value !== '') {
           valueForm[key] = value;
+        } else {
+          valueForm[key] = undefined
+        }
       }
       saveModelsState({
         params: { ...params, ...valueForm },

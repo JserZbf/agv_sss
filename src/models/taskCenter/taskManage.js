@@ -107,6 +107,9 @@ export default {
 
                 yield put({
                     type: 'save',
+                    payload: {
+                        visible: false,
+                    },
                 });
                 yield put({ type: 'dictPage' });
             } catch (error) {

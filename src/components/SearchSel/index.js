@@ -24,7 +24,7 @@ const SearchSel = ({ columns, selForm, onFinishSel, params }) => {
     let childNode = null
     switch(item.type) {
       case 'number':
-        childNode = <InputNumber addonBefore={item.addonBefore} placeholder={`请输入${item?.title}`} style={{ width: '100%' }} />
+        childNode = <InputNumber min={item.min} max={item.max} addonBefore={item.addonBefore} placeholder={`请输入${item?.title}`} style={{ width: '100%' }} />
         break;
       case 'select':
         const showOptionKey =item?.showOption?.key || 'key';
@@ -64,7 +64,7 @@ const SearchSel = ({ columns, selForm, onFinishSel, params }) => {
           style={{ width: '100%' }}
           name="basic"
           layout='horizontal'
-          labelCol={{ span: 6 }}
+          labelCol={{ span: 8 }}
           className={styles.formStyle}
           autoComplete="off"
           form={selForm}

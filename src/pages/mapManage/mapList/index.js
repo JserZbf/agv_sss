@@ -137,7 +137,11 @@ const MapList = function ({ windowInnerHeight }) {
     selForm.validateFields().then((values) => {
       const valueForm = {};
       for (const [key, value] of Object.entries(values)) {
-        valueForm[key] = value;
+        if (value !== '') {
+          valueForm[key] = value;
+        } else {
+          valueForm[key] = undefined
+        }
       }
       saveModelsState({
         params: { ...params, ...valueForm },

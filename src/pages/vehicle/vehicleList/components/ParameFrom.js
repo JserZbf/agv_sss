@@ -56,10 +56,10 @@ const ParameFrom = ({ saveModelsState, agvInfo }) => {
         onFinish={onFinish}
       >
         <Form.Item name="acceleration" label="AGV加速度" rules={[{ required: true }]}>
-          <InputNumber autoComplete="off" min={0} max={1} placeholder="请输入AGV加速度" />
+          <InputNumber autoComplete="off" addonAfter="m/s" min={0} placeholder="请输入AGV加速度" />
         </Form.Item>
         <Form.Item name="maxSpeed" label="AGV的最大速度" rules={[{ required: true }]}>
-          <InputNumber autoComplete="off" min={0} max={1} placeholder="请输入AGV最大速度" />
+          <InputNumber autoComplete="off" addonAfter="m/s" min={0} placeholder="请输入AGV最大速度" />
         </Form.Item>
       </Form>
     </Modal>

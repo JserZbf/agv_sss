@@ -15,7 +15,7 @@ import {
 import styles from './index.less';
 import ModalFrom from './components/ModalFrom';
 
-const TaskManage = function () {
+const TaskManage = function ({windowInnerHeight}) {
   const dispatch = useDispatch();
   const saveModelsState = (payload) => dispatch({ type: 'taskManage/save', payload });
   const dictPage = (payload) => dispatch({ type: 'taskManage/dictPage', payload });
@@ -143,6 +143,8 @@ const TaskManage = function () {
       width: 100,
       flag: true,
       type: 'number',
+      min: 0,
+      max: 10,
       addonBefore: <Select onChange={(value)=>{setCompareValue(value)}} defaultValue={priorityList[0]} className="select-before">
         {
           priorityList && priorityList.map(item=> {
@@ -218,7 +220,11 @@ const TaskManage = function () {
     selForm.validateFields().then((values) => {
       const valueForm = {};
       for (const [key, value] of Object.entries(values)) {
-        valueForm[key] = value;
+        if (value !== '') {
+          valueForm[key] = value;
+        } else {
+          valueForm[key] = undefined
+        }
         if (key === 'priority' && value) {
           valueForm[key] = value;
           valueForm['compare'] = compareValue;
@@ -258,6 +264,7 @@ const TaskManage = function () {
               type="primary"
               icon={<RetweetOutlined />}
               className="addButton"
+              disabled={!selectKeys.length}
               onClick={() => {
                 dictIssue({ ids: selectKeys });
               }}
@@ -280,7 +287,7 @@ const TaskManage = function () {
             <Table
               columns={columns}
               dataSource={ruleData}
-              scroll={{scrollToFirstRowOnChange: true,x: 1000}}
+              scroll={{ y: windowInnerHeight - 380, x: 'max-content' }}
               pagination={{total}}
               onChange={(pagination)=> {
                 saveModelsState({

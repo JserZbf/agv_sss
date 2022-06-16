@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Form, List, Popconfirm, Row, Col, Steps, Select } from 'antd';
+import { Card, Form, List, Popconfirm, Row, Col, Steps, Select, Empty } from 'antd';
 import SearchSel from 'components/SearchSel';
 import AutoScale from 'components/AutoScale';
 import { useSelector, useDispatch } from 'dva';
@@ -146,6 +146,8 @@ const PoolManage = function ({}) {
       key: 'priority',
       flag: true,
       type: 'number',
+      min: 0,
+      max: 10,
       addonBefore: <Select onChange={(value)=>{setCompareValue(value)}} defaultValue={priorityList[0]} className="select-before">
         {
           priorityList && priorityList.map(item=> {
@@ -162,6 +164,8 @@ const PoolManage = function ({}) {
       for (const [key, value] of Object.entries(values)) {
         if (value !== '') {
           valueForm[key] = value;
+        } else {
+          valueForm[key] = undefined
         }
         if (key === 'priority' && value) {
           valueForm[key] = value;
@@ -188,62 +192,67 @@ const PoolManage = function ({}) {
             />
           </div>
           <p className={styles.splitLine} />
-          <div className={styles.cardStyles}>
-          <Row justify="start" gutter={16}>
-            {
-              ruleData.map((item, index)=> {
-                return <Col>
-                  <div className={styles.cardItemsStyles}>
-                   <Card
-                    title={item.taskCode}
-                    headStyle={{background: '#6290fa', borderRadius: '20px 20px 0 0', color: '#fff'}}
-                    style={{borderRadius: '20px'}}
-                      actions={[
-                        <Popconfirm
-                          title="是否暂停？"
-                          okText="确定"
-                          cancelText="取消"
-                          disabled={item.taskState === 'FINISHED' || item.taskState === 'CANCEL'}
-                          onConfirm={() => {
-                            dicPause({ id: item.id })
-                          }}
+          {
+            ruleData.length > 0 ?
+            <div className={styles.cardStyles}>
+              <Row justify="start" gutter={16}>
+                {
+                  ruleData.map((item, index)=> {
+                    return <Col>
+                      <div className={styles.cardItemsStyles}>
+                      <Card
+                        title={item.taskCode}
+                        headStyle={{background: '#6290fa', borderRadius: '20px 20px 0 0', color: '#fff'}}
+                        style={{borderRadius: '20px'}}
+                          actions={[
+                            <Popconfirm
+                              title="是否暂停？"
+                              okText="确定"
+                              cancelText="取消"
+                              disabled={item.taskState === 'FINISHED' || item.taskState === 'CANCEL'}
+                              onConfirm={() => {
+                                dicPause({ id: item.id })
+                              }}
+                            >
+                              <div className={(item.taskState === 'FINISHED' || item.taskState === 'CANCEL') ? styles.cardDisabled : styles.cardItemsOut}><LoginOutlined />暂停</div>
+                            </Popconfirm>,
+                            <Popconfirm
+                              title="是否删除？"
+                              okText="确定"
+                              cancelText="取消"
+                              disabled={item.taskState === 'FINISHED' || item.taskState === 'CANCEL'}
+                              onConfirm={() => {
+                                dictDel({ id: item.id });
+                              }}
+                            >
+                              <div className={(item.taskState === 'FINISHED' || item.taskState === 'CANCEL') ? styles.cardDisabled : styles.cardItemsDelete}><DeleteOutlined />删除</div>
+                            </Popconfirm>,
+                          ]}
                         >
-                          <div className={(item.taskState === 'FINISHED' || item.taskState === 'CANCEL') ? styles.cardDisabled : styles.cardItemsOut}><LoginOutlined />暂停</div>
-                        </Popconfirm>,
-                         <Popconfirm
-                          title="是否删除？"
-                          okText="确定"
-                          cancelText="取消"
-                          disabled={item.taskState === 'FINISHED' || item.taskState === 'CANCEL'}
-                          onConfirm={() => {
-                            dictDel({ id: item.id });
-                          }}
-                        >
-                           <div className={(item.taskState === 'FINISHED' || item.taskState === 'CANCEL') ? styles.cardDisabled : styles.cardItemsDelete}><DeleteOutlined />删除</div>
-                        </Popconfirm>,
-                      ]}
-                    >
-                      <List
-                        size={'small'}
-                        dataSource={dataKey}
-                        renderItem={list => (
-                          <List.Item className={(list['key']==='priority' || list['key']==='agvState') ? styles.listItemAllcontent:styles.listItemcontent}>
-                            <div>
-                              <span className={styles.listItemTitle}>{list['value']}:</span> {
-                                list.render ? list.render(item[list['key']]) : item[list['key']]
-                              }
-                            </div>
-                          </List.Item>
-                        )}
-                      />
-                    </Card>
-                  </div>
-                </Col>  
-                })
-            }
-          </Row>
-            
-          </div>
+                          <List
+                            size={'small'}
+                            dataSource={dataKey}
+                            renderItem={list => (
+                              <List.Item className={(list['key']==='priority' || list['key']==='agvState') ? styles.listItemAllcontent:styles.listItemcontent}>
+                                <div>
+                                  <span className={styles.listItemTitle}>{list['value']}:</span> {
+                                    list.render ? list.render(item[list['key']]) : item[list['key']]
+                                  }
+                                </div>
+                              </List.Item>
+                            )}
+                          />
+                        </Card>
+                      </div>
+                    </Col>  
+                    })
+                }
+              </Row>
+                
+            </div>
+            : 
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+          }
         </div>
       </div>
     </div>

@@ -71,7 +71,7 @@ const EditModal = ({ saveModelsState, agvModelList, agvPositonList }) => {
         </Col>
         <Col span="12">
           <Form.Item name="positionId" label="所在节点" rules={[{ required: true }]}>
-            <Select placeholder="请选择所在节点" >
+            <Select placeholder="请选择所在节点" disabled={!isAdd}>
               {
                 agvPositonList && agvPositonList.map(item=> {
                   return <Select.Option key={item.key} value={item.key}>{item.value}</Select.Option>
@@ -102,17 +102,17 @@ const EditModal = ({ saveModelsState, agvModelList, agvPositonList }) => {
         </Col>
         <Col span="12">
           <Form.Item name="weight" label="AGV自重" rules={[{ required: true }]}>
-            <InputNumber autoComplete="off" addonAfter="kg" placeholder="请输入AGV自重"/>
+            <InputNumber autoComplete="off" min={0} addonAfter="kg" placeholder="请输入AGV自重"/>
           </Form.Item>
         </Col>
         <Col span="12">
           <Form.Item name="maxSpeed" label="AGV的最大速度" rules={[{ required: true }]}>
-            <InputNumber autoComplete="off" addonAfter="m/s" placeholder="请输入AGV最大速度" />
+            <InputNumber autoComplete="off" min={0} addonAfter="m/s" placeholder="请输入AGV最大速度" />
           </Form.Item>
         </Col>
         <Col span="12">
           <Form.Item name="avoidance" label="避障等级" rules={[{ required: true }]}>
-            <InputNumber autoComplete="off" placeholder="请输入避障等级" />
+            <InputNumber autoComplete="off" min={0} placeholder="请输入避障等级" />
           </Form.Item>
         </Col>
         <Col span="12">

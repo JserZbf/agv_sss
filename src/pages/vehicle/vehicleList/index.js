@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Form, Row, Col } from 'antd';
+import { Button, Form, Row, Col, Empty } from 'antd';
 import SearchSel from 'components/SearchSel';
 import AutoScale from 'components/AutoScale';
 import { useSelector, useDispatch } from 'dva';
@@ -69,7 +69,11 @@ const VehicleList = function () {
     selForm.validateFields().then((values) => {
       const valueForm = {};
       for (const [key, value] of Object.entries(values)) {
-        valueForm[key] = value;
+        if (value !== '') {
+          valueForm[key] = value;
+        } else {
+          valueForm[key] = undefined
+        }
       }
       saveModelsState({
         params: { ...params, ...valueForm },
@@ -112,24 +116,29 @@ const VehicleList = function () {
             />
           </div>
           <p className={styles.splitLine} />
-          <div className={styles.cardStyles}>
-          <Row justify="start" gutter={16}>
-            {
-              ruleData.map((item)=> {
-                return <Col key={item.key}>
-                  <div className={styles.cardItemsStyles}>
-                    <CardItem
-                      item={item}
-                      saveModelsState={saveModelsState}
-                      agvModelList={agvModelList}
-                    />
-                  </div>
-                </Col>  
-                })
-            }
-          </Row>
-            
-          </div>
+          {
+            ruleData.length > 0 ? 
+              <div className={styles.cardStyles}>
+              <Row justify="start" gutter={16}>
+                {
+                  ruleData.map((item)=> {
+                    return <Col key={item.key}>
+                      <div className={styles.cardItemsStyles}>
+                        <CardItem
+                          item={item}
+                          saveModelsState={saveModelsState}
+                          agvModelList={agvModelList}
+                        />
+                      </div>
+                    </Col>  
+                    })
+                }
+              </Row>
+              
+            </div>
+            :
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+          }
         </div>
       </div>
       <ModalFrom

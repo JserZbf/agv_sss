@@ -112,7 +112,11 @@ const SystemLog = function ({windowInnerHeight}) {
             }
           })
         } else {
-          valueForm[key] = value
+          if (value !== '') {
+            valueForm[key] = value;
+          } else {
+            valueForm[key] = undefined
+          }
         }
       }
       saveModelsState({
