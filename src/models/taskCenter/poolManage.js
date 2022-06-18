@@ -20,7 +20,6 @@ let time
 export default {
     namespace: 'poolManage',
     state: {
-        visible: false,
         ruleData: [],
         params: {
             current: 1,

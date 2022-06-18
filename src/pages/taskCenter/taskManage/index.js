@@ -27,10 +27,10 @@ const TaskManage = function ({windowInnerHeight}) {
   const dictTaskType = (payload) => dispatch({ type: 'taskManage/dictTaskType', payload });
   const dictCompare = (payload) => dispatch({ type: 'taskManage/dictCompare', payload });
 
-  const { params, total, priorityList, ruleData, taskStates, agvModelList, taskTypeList } = useSelector(
+  const { params, total, priorityList, ruleData, taskStates, agvModelList, taskTypeList, selectKeys } = useSelector(
     (models) => models.taskManage,
   );
-  const [selectKeys, setSelectKeys] = useState([]);
+  // const [selectKeys, setSelectKeys] = useState([]);
   const [compareValue, setCompareValue] = useState(priorityList[0]?.key);
 
   const [selForm] = Form.useForm();
@@ -48,8 +48,11 @@ const TaskManage = function ({windowInnerHeight}) {
   }, [priorityList]);
 
   const rowSelection = {
+    selectedRowKeys: selectKeys,
     onChange: (selectedRowKeys) => {
-      setSelectKeys(selectedRowKeys);
+      saveModelsState({
+        selectKeys: selectedRowKeys
+      })
     },
     getCheckboxProps: (record) => ({
       disabled: record.taskState !== 'CREATED',
@@ -225,7 +228,7 @@ const TaskManage = function ({windowInnerHeight}) {
         } else {
           valueForm[key] = undefined
         }
-        if (key === 'priority' && value) {
+        if (key === 'priority' && value !== undefined && value !== null) {
           valueForm[key] = value;
           valueForm['compare'] = compareValue;
         }
@@ -288,7 +291,7 @@ const TaskManage = function ({windowInnerHeight}) {
               columns={columns}
               dataSource={ruleData}
               scroll={{ y: windowInnerHeight - 380, x: 'max-content' }}
-              pagination={{total}}
+              pagination={{total, current: params.current}}
               onChange={(pagination)=> {
                 saveModelsState({
                   params: { ...params, ...pagination },

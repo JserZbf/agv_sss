@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Modal, Input, Upload, InputNumber } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { useSelector, useDispatch } from 'dva';
@@ -23,6 +23,7 @@ const EditModal = ({ saveModelsState }) => {
   };
   const [form] = Form.useForm();
   const onFinish = (value) => {
+    
     const payload = {
       ...value,
       lowBatteryStandard,
@@ -30,6 +31,13 @@ const EditModal = ({ saveModelsState }) => {
     };
     dictAdd({...payload})
   };
+
+  useEffect(() => {
+    form.resetFields();
+    setLowBatteryStandard()
+  }, [visible]);
+
+
   const uploadButton = (
     <div>
       {loading ? <LoadingOutlined /> : <PlusOutlined />}
@@ -65,6 +73,8 @@ const EditModal = ({ saveModelsState }) => {
       title={isAdd ? '创建数据' : '编辑数据'}
       visible={visible}
       getContainer={false}
+      maskClosable={false}
+      destroyOnClose={true}
       onOk={() => {
         form.submit();
       }}
@@ -87,11 +97,16 @@ const EditModal = ({ saveModelsState }) => {
           <InputNumber autoComplete="off" step="0.1" placeholder="请输入控制精度" min={0} max={1}/>
         </Form.Item>
         <Form.Item label="AGV低电量标准" rules={[{ required: true }]}  >
-          <InputNumber autoComplete="off" step="0.1" onPressEnter={(value)=> {
+          <InputNumber autoComplete="off" step="0.1" onChange={(value)=> {
               if ( 0 < value && value <= 1) {
                 setLowBatteryStandard(value)
               }
-            }}
+            }} 
+            onStep={(value)=> {
+              if ( 0 < value && value <= 1) {
+                setLowBatteryStandard(value)
+              }
+            }} 
             min={0} max={1}
             value={lowBatteryStandard}
             placeholder="请输入AGV低电量标准"

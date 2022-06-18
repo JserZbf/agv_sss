@@ -160,7 +160,7 @@ const VehicleModuleList = function ({ windowInnerHeight }) {
               columns={columns}
               dataSource={ruleData}
               scroll={{ y: windowInnerHeight - 380 }}
-              pagination={{total}}
+              pagination={{total, current: params.current}}
               onChange={(pagination)=> {
                 saveModelsState({
                   params: { ...params, ...pagination },

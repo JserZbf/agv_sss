@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Modal, Input, InputNumber, Upload } from 'antd';
+import { Form, Modal, Input, InputNumber } from 'antd';
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 
 const EditModal = ({ visible, saveModelsState, storeData, dictUpdate }) => {
@@ -81,7 +81,7 @@ const EditModal = ({ visible, saveModelsState, storeData, dictUpdate }) => {
           <InputNumber autoComplete="off" placeholder="请输入控制精度" step="0.1" min={0} max={1}/>
         </Form.Item>
         <Form.Item label="AGV低电量标准"  rules={[{ required: true }]} >
-          <InputNumber autoComplete="off" onPressEnter={(value)=> {
+          <InputNumber autoComplete="off" onChange={(value)=> {
               if ( 0 < value && value <= 1) {
                 setLowBatteryStandard(value)
               }

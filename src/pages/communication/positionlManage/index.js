@@ -217,7 +217,7 @@ const PositionlManage = function () {
             <Table
               columns={columns}
               dataSource={ruleData}
-              pagination={{total}}
+              pagination={{total, current: params.current}}
               onChange={(pagination)=> {
                 saveModelsState({
                   params: { ...params, ...pagination },

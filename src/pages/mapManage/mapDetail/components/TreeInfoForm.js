@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
-import { Form, Drawer, Input, Select, Button, InputNumber, Table, Popconfirm } from 'antd';
+import { Form, Drawer, Input, Select, Button, InputNumber, Table, Popconfirm, Switch } from 'antd';
 import { arrayMoveImmutable } from 'array-move';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import { useSelector, useDispatch } from 'dva';
-import { MenuOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { MenuOutlined, PlusOutlined, DeleteOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 
 const EditableContext = React.createContext(null);
 
@@ -259,6 +259,9 @@ const EditModal = ({
   useEffect(() => {
     if (isAdd) {
       form.resetFields();
+      form.setFieldsValue({
+        closed: false,
+      });
     } else {
       const startPositionNode = nodeData.find((item)=>{ return item.id === treeSelectInfo.startPositionId })
       const endPositionIdNode = nodeData.find((item)=>{ return item.id === treeSelectInfo.endPositionId })
@@ -281,7 +284,6 @@ const EditModal = ({
        payload = {
         ...value,
         agvModelIds: typeof(value.agvModelIds)=='string' ? [value.agvModelIds] : value.agvModelIds,
-        closed: true,
         mapId: mapId,
         operationsWhenEnd: treeSelectInfo.operationsWhenEnd || [],
         operationsWhenPass: treeSelectInfo.operationsWhenPass || [],
@@ -336,7 +338,11 @@ const EditModal = ({
   }
   const getDrawerTitle = () => {
     if (isAdd) {
-      return '新增节点'
+      if (treeSelectInfo.key==='node' || treeSelectInfo.hierarchy === 'node') {
+        return '新增节点'
+      } else {
+        return '新增站点'
+      }
     } else {
       if (treeSelectInfo.hierarchy==='site') {
         return '站点配置'
@@ -353,7 +359,8 @@ const EditModal = ({
   return (
     <Drawer
       title={getDrawerTitle()}
-      placement="right"   
+      placement="right"
+      maskClosable={false} 
       width={treeSelectInfo.hierarchy === 'action' ? 520 : 420}
       onClose={()=>{saveModelsState({treeInfoFormVisible: false})}}
       visible={treeInfoFormVisible}
@@ -380,6 +387,12 @@ const EditModal = ({
             
             <Form.Item name="positionName" label="名称" rules={[{ required: true }]}>
               <Input placeholder="请输入名称" />
+            </Form.Item>
+            <Form.Item name="closed" label="是否关闭" rules={[{ required: true }]}>
+              <Switch
+                checkedChildren={<CheckOutlined />}
+                unCheckedChildren={<CloseOutlined />}
+              />
             </Form.Item>
             <Form.Item name="x" label="X" rules={[{ required: true }]}>
               <InputNumber addonAfter="m" step="0.001" precision="3" placeholder="请输入X坐标" />
@@ -458,7 +471,7 @@ const EditModal = ({
               <div>{endPositionName}</div>
             </Form.Item>
             <Form.Item name="maxSpeed" label="最大速度">
-              <Input autoComplete="off" addonAfter="m/s" min="0" placeholder="请输入最大速度" />
+              <InputNumber autoComplete="off" min={0} addonAfter="m/s" placeholder="请输入最大速度" />
             </Form.Item>
             <Form.Item name="roadType" label="路线类型" >
               <Select onChange={(value)=>{setRoadType(value)}}>

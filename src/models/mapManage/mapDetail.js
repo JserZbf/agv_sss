@@ -53,19 +53,19 @@ export default {
                 const { code, message } = yield call(dictAdd, payload);
                 if (code === 200) {
                     openNotificationWithIcon('success', '创建成功');
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            treeInfoFormVisible: false,
+                        },
+                    });
+                    yield put({ type: 'dictTreeData',payload: {
+                        mapId,
+                    } });
                 } else {
                     openNotificationWithIcon('info', message);
                 }
 
-                yield put({
-                    type: 'save',
-                    payload: {
-                        treeInfoFormVisible: false,
-                    },
-                });
-                yield put({ type: 'dictTreeData',payload: {
-                    mapId,
-                } });
             } catch (error) {
                 yield put({
                     type: 'save',
@@ -81,19 +81,19 @@ export default {
                 const { code,  message } = yield call(dictUpdate, payload);
 
                 if (code === 200) {
-                    openNotificationWithIcon('success', '修改成功');
+                    openNotificationWithIcon('success', '修改成功');    
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            treeInfoFormVisible: false,
+                        },
+                    });
+                    yield put({type: 'dictTreeData',payload: {
+                        mapId,
+                    }});
                 } else {
                     openNotificationWithIcon('info', message);
                 }
-                yield put({
-                    type: 'save',
-                    payload: {
-                        treeInfoFormVisible: false,
-                    },
-                });
-                yield put({type: 'dictTreeData',payload: {
-                    mapId,
-                }});
             } catch (error) {
                 yield put({
                     type: 'save',
@@ -316,18 +316,19 @@ export default {
 
                 if (code === 200) {
                     openNotificationWithIcon('success', '修改成功');
+                    
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            treeInfoFormVisible: false,
+                        },
+                    });
+                    yield put({type: 'dictTreeData',payload: {
+                        mapId,
+                    }});
                 } else {
                     openNotificationWithIcon('info', message);
                 }
-                yield put({
-                    type: 'save',
-                    payload: {
-                        treeInfoFormVisible: false,
-                    },
-                });
-                yield put({type: 'dictTreeData',payload: {
-                    mapId,
-                }});
             } catch (error) {
                 yield put({
                     type: 'save',
@@ -344,18 +345,18 @@ export default {
 
                 if (code === 200) {
                     openNotificationWithIcon('success', '删除成功');
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            treeInfoFormVisible: false,
+                        },
+                    });
+                    yield put({type: 'dictTreeData',payload: {
+                        mapId,
+                    }});
                 } else {
                     openNotificationWithIcon('info', message);
                 }
-                yield put({
-                    type: 'save',
-                    payload: {
-                        treeInfoFormVisible: false,
-                    },
-                });
-                yield put({type: 'dictTreeData',payload: {
-                    mapId,
-                }});
             } catch (error) {
                 yield put({
                     type: 'save',
@@ -372,18 +373,19 @@ export default {
 
                 if (code === 200) {
                     openNotificationWithIcon('success', '添加成功');
+                    
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            treeInfoFormVisible: false,
+                        },
+                    });
+                    yield put({type: 'dictTreeData',payload: {
+                        mapId,
+                    }});
                 } else {
                     openNotificationWithIcon('info', message);
                 }
-                yield put({
-                    type: 'save',
-                    payload: {
-                        treeInfoFormVisible: false,
-                    },
-                });
-                yield put({type: 'dictTreeData',payload: {
-                    mapId,
-                }});
             } catch (error) {
                 yield put({
                     type: 'save',

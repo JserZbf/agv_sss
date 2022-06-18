@@ -38,7 +38,8 @@ export default {
         agvModelList: [],
         agvPositonList: [],
         taskTypeList: [],
-        priorityList: []
+        priorityList: [],
+        selectKeys: []
     },
     effects: {
         *dictPage({}, { call, put, select }) {
@@ -78,17 +79,18 @@ export default {
                 const { code, data, message } = yield call(dictAdd, payload);
                 if (code === 200) {
                     openNotificationWithIcon('success', '创建成功');
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            visible: false,
+                        },
+                    });
                 } else {
                     openNotificationWithIcon('info', message);
                 }
 
-                yield put({
-                    type: 'save',
-                    payload: {
-                        visible: false,
-                    },
-                });
                 yield put({ type: 'dictPage' });
+
             } catch (error) {
                 yield put({
                     type: 'save',
@@ -101,16 +103,16 @@ export default {
                 const { code, message } = yield call(dictUpdate, {...payload});
                 if (code === 200) {
                     openNotificationWithIcon('success', '修改成功');
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            visible: false,
+                        },
+                    });
                 } else {
                     openNotificationWithIcon('info', message);
                 };
-
-                yield put({
-                    type: 'save',
-                    payload: {
-                        visible: false,
-                    },
-                });
+                
                 yield put({ type: 'dictPage' });
             } catch (error) {
                 yield put({
@@ -272,6 +274,12 @@ export default {
                 const { code, message } = yield call(dictIssue, {...payload});
                 if (code === 200) {
                     openNotificationWithIcon('success', '下发成功');
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            selectKeys: []
+                        },
+                    });
                 } else {
                     openNotificationWithIcon('info', message);
                 };

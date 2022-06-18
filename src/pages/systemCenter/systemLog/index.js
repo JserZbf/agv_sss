@@ -60,18 +60,21 @@ const SystemLog = function ({windowInnerHeight}) {
       render: (text, record, index) => <span>{index + 1}</span>,
       width: 80,  
       dataIndex: 'index',
+      fixed: 'left',
     },
     {
       title: '时间',
       dataIndex: 'createTime',
       key: 'createTime',
       width: 200,
+      fixed: 'left',
     },   
     {
       title: '状态变更类型',
       dataIndex: 'agvState',
       key: 'agvState',
-      width: 200
+      width: 200,
+      fixed: 'left',
     }, 
     {
       title: '类型',
@@ -100,17 +103,23 @@ const SystemLog = function ({windowInnerHeight}) {
     selForm.validateFields().then((values) => {
       const valueForm = {};
       for (const [key, value] of Object.entries(values)) {
-        if (key === 'time' && value) {
-          value.forEach((item, index)=> {
-            switch(index) {
-              case 0:
-                valueForm['startTime'] = moment(item).format('YYYY-MM-DD HH:mm:ss');
-                break;
-              case 1:
-                valueForm['endTime'] = moment(item).format('YYYY-MM-DD HH:mm:ss');
-                break;
-            }
-          })
+        if (key === 'time') {
+          if (value) {
+            value.forEach((item, index)=> {
+              switch(index) {
+                case 0:
+                  valueForm['startTime'] = moment(item).format('YYYY-MM-DD HH:mm:ss');
+                  break;
+                case 1:
+                  valueForm['endTime'] = moment(item).format('YYYY-MM-DD HH:mm:ss');
+                  break;
+              }
+            })
+          } else {
+            valueForm['startTime'] = undefined
+            valueForm['endTime'] = undefined
+          }
+          
         } else {
           if (value !== '') {
             valueForm[key] = value;
@@ -186,7 +195,7 @@ const SystemLog = function ({windowInnerHeight}) {
               columns={columns}
               dataSource={ruleData}
               scroll={{ y: windowInnerHeight - 380, x: 'max-content' }}
-              pagination={{total}}
+              pagination={{total, current: params.current}}
               onChange={(pagination)=> {
                 saveModelsState({
                   params: { ...params, ...pagination },

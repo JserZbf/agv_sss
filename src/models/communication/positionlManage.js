@@ -67,16 +67,16 @@ export default {
                 const { code, message } = yield call(dictAdd, payload);
                 if (code === 200) {
                     openNotificationWithIcon('success', '创建成功');
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            visible: false,
+                        },
+                    });
                 } else {
                     openNotificationWithIcon('info', message);
                 }
 
-                yield put({
-                    type: 'save',
-                    payload: {
-                        visible: false,
-                    },
-                });
                 yield put({ type: 'dictPage' });
             } catch (error) {
                 yield put({
@@ -90,16 +90,16 @@ export default {
                 const { code, message } = yield call(dictUpdate, {...payload});
                 if (code === 200) {
                     openNotificationWithIcon('success', '修改成功');
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            visible: false,
+                        },
+                    });
                 } else {
                     openNotificationWithIcon('info', message);
                 };
 
-                yield put({
-                    type: 'save',
-                    payload: {
-                        visible: false,
-                    },
-                });
                 yield put({ type: 'dictPage' });
             } catch (error) {
                 yield put({
@@ -115,13 +115,7 @@ export default {
                 } else {
                     openNotificationWithIcon('info', message);
                 };
-
-                yield put({
-                    type: 'save',
-                    payload: {
-                        visible: false,
-                    },
-                });
+                
                 yield put({ type: 'dictPage' });
             } catch (error) {
                 yield put({
@@ -204,16 +198,16 @@ export default {
                 const { code, message } = yield call(dictInteract, {...payload});
                 if (code === 200) {
                     openNotificationWithIcon('success', '修改成功');
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            interactVisible: false,
+                        },
+                    });
                 } else {
                     openNotificationWithIcon('info', message);
                 };
 
-                yield put({
-                    type: 'save',
-                    payload: {
-                        interactVisible: false,
-                    },
-                });
                 yield put({ type: 'dictPage' });
             } catch (error) {
                 yield put({

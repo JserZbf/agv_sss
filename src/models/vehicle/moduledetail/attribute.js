@@ -70,15 +70,15 @@ export default {
 
                 if (code === 200) {
                     openNotificationWithIcon('success', '修改成功');
+                    yield put({
+                        type: 'save',
+                        payload: {
+                            visible: false,
+                        },
+                    });
                 } else {
                     openNotificationWithIcon('info', message);
                 }
-                yield put({
-                    type: 'save',
-                    payload: {
-                        visible: false,
-                    },
-                });
                 yield put({ type: 'dictPage',payload: {
                     agvId,
                 } });

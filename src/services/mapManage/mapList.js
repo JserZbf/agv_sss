@@ -12,7 +12,7 @@ export const dictUpdate = (params) => {
 };
 
 export const dictDel = (params) => {
-    return http.delete('/api/sss-agv-service/Map/delete', params);
+    return http.delete('/api/sss-agv-service/Map/clear', params);
 };
 
 export const dictUpState = (params) => {
