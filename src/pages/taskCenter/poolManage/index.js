@@ -57,13 +57,13 @@ const PoolManage = function ({}) {
     key: 'endPositionName',
     value: '终点'
   },{
-    key: 'agvName',
+    key: 'currentPositionName',
     value: '当前节点'
   },{
     key: 'expectedAgvModelName',
     value: 'agv类型'
   },{
-    key: 'expectedAgvModelName',
+    key: 'agvName',
     value: '执行agv',
   }];
 
@@ -211,7 +211,7 @@ const PoolManage = function ({}) {
                               cancelText="取消"
                               disabled={item.taskState === 'FINISHED' || item.taskState === 'CANCEL'}
                               onConfirm={() => {
-                                dicPause({ id: item.id })
+                                dicPause({ id: item.taskId })
                               }}
                             >
                               <div className={(item.taskState === 'FINISHED' || item.taskState === 'CANCEL') ? styles.cardDisabled : styles.cardItemsOut}><LoginOutlined />暂停</div>
@@ -222,7 +222,7 @@ const PoolManage = function ({}) {
                               cancelText="取消"
                               disabled={item.taskState === 'FINISHED' || item.taskState === 'CANCEL'}
                               onConfirm={() => {
-                                dictDel({ id: item.id });
+                                dictDel({ id: item.taskId });
                               }}
                             >
                               <div className={(item.taskState === 'FINISHED' || item.taskState === 'CANCEL') ? styles.cardDisabled : styles.cardItemsDelete}><DeleteOutlined />删除</div>

@@ -1,7 +1,7 @@
 import http from '../http';
 
-export const dictPage = (params) => {
-    return http.post('/api/sss-agv-service/RunTimeTask/getAll', params);
+export const dictPage = (params, cycleParams) => {
+    return http.post('/api/sss-agv-service/RunTimeTask/getAll', params, {}, {} , cycleParams.isCycle);
 };
 export const dictDel = (params) => {
     return http.delete('/api/sss-agv-service/Task/delete', params);

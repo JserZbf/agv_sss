@@ -119,7 +119,8 @@ const DrawBox = ({  backImgUrl, mapId, dictRelationDelete,saveModelsState,saveMa
             },
             params: {
               name: item.positionName,
-              id: item.id
+              id: item.id,
+              closed: item.closed
             }
           }
         }
@@ -128,7 +129,7 @@ const DrawBox = ({  backImgUrl, mapId, dictRelationDelete,saveModelsState,saveMa
       data.cells = (data.cells || []).map(item=> {
         return {
           ...item,
-            component: item && <div style={{background: '#6290fa',textAlign:'center',color: '#fff',height:'100%',lineHeight: '40px',borderRadius: '5px'}}>
+            component: item && <div style={{background: item?.params?.closed ? 'red' : '#6290fa',textAlign:'center',color: '#fff',height:'100%',lineHeight: '40px',borderRadius: '5px'}}>
             <EnvironmentOutlined style={{marginRight: '5px'}}/>{item?.params?.name}
           </div>,
           attrs: attrs,
@@ -178,7 +179,7 @@ const DrawBox = ({  backImgUrl, mapId, dictRelationDelete,saveModelsState,saveMa
               height: 40,
               x,
               y,
-              component:  <div style={{background: '#6290fa',textAlign:'center',color: '#fff',height:'100%',lineHeight: '40px',borderRadius: '5px'}}>
+              component:  <div style={{background: item.closed ? 'red' : '#6290fa',textAlign:'center',color: '#fff',height:'100%',lineHeight: '40px',borderRadius: '5px'}}>
               <EnvironmentOutlined style={{marginRight: '5px'}}/>{positionName}
             </div>,
               ports: ports,
@@ -206,7 +207,7 @@ const DrawBox = ({  backImgUrl, mapId, dictRelationDelete,saveModelsState,saveMa
               width: 110,
               height: 40,
               ports: ports,
-              component: <div style={{background: '#6290fa',textAlign:'center',color: '#fff',height:'100%',lineHeight: '40px',borderRadius: '5px'}}>
+              component: <div style={{background: item.closed ? 'red' : '#6290fa',textAlign:'center',color: '#fff',height:'100%',lineHeight: '40px',borderRadius: '5px'}}>
               <EnvironmentOutlined style={{marginRight: '5px'}}/>{item.positionName}
             </div>
             }

@@ -38,7 +38,8 @@ export default {
         stateList: [],  //状态下拉列表
         agvModelList: [],   // 车辆类型下拉列表
         agvPositonList: [], //所在节点下拉列表
-        agvInfo: {} //编辑信息
+        agvInfo: {}, //编辑信息
+        dictPageState: false
     },
     effects: {
         *dictPage({}, { call, put, select }) {
@@ -46,21 +47,23 @@ export default {
                if (time) {
                 clearTimeout(time)
                }
-                const { params } = yield select((state) => state.vehicleList);
-                const { code, data, message } = yield call(dictPage, { ...params });
+                const { params, dictPageState } = yield select((state) => state.vehicleList);
+                const { code, data, message } = yield call(dictPage, { ...params }, {isCycle: dictPageState});
                 if (code === 200) {
                     yield put({
                         type: 'save',
                         payload: {
                             ruleData: data.records || [],
+                            dictPageState: false
                         },
                     });
                 } else {
-                    openNotificationWithIcon('info', message);
+                    !dictPageState && openNotificationWithIcon('info', message);
                     yield put({
                         type: 'save',
                         payload: {
                             ruleData: [],
+                            dictPageState: true
                         },
                     });
                 }
@@ -69,12 +72,15 @@ export default {
                 yield put({ type: 'dictPage' });
 
             } catch (error) {
+                yield new Promise((resolve) => time = setTimeout(resolve, 2000));
                 yield put({
                     type: 'save',
                     payload: {
                         ruleData: [],
+                        dictPageState: true
                     },
                 });
+                yield put({ type: 'dictPage' });
             }
         },
         *dictState({}, { call, put, select }) {

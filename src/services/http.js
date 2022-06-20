@@ -54,7 +54,7 @@ export class Http {
       });
     };
 
-    this.request = async (lUrl, init, headers = {}, config = {}) => {
+    this.request = async (lUrl, init, headers = {}, config = {}, isCycle = false) => {
       let url = (lUrl || '').startsWith('/') ? lUrl : `/${lUrl}`;
       if (this.defaultConfig.prefix && !(url || '').startsWith(this.defaultConfig.prefix)) {
         url = `${this.defaultConfig.prefix}${url}`;
@@ -83,7 +83,7 @@ export class Http {
         const system = localStorage.getItem('systemType');
         const env = localStorage.getItem('envtype');
         let response = await fetch(url, options);
-        response = await this.processResult(response);
+        response = await this.processResult(response, isCycle);
         return response;
       } catch (error) {
         this.defaultConfig.errorHook(error, url);
@@ -110,7 +110,7 @@ export class Http {
     };
   }
 
-  checkStatus(response) {
+  checkStatus(response, isCycle) {
     if (response.status >= 200 && response.status < 300) {
       return response;
     }
@@ -118,7 +118,7 @@ export class Http {
       this.notLogin();
       return response;
     }
-    if (codeMessage[response.status]) {
+    if (codeMessage[response.status] && !isCycle) {
       notification.error({
         message: codeMessage[response.status],
       });
@@ -168,8 +168,8 @@ export class Http {
     return response.json();
   }
 
-  async processResult(response) {
-    this.checkStatus(response);
+  async processResult(response, isCycle) {
+    this.checkStatus(response, isCycle);
     const contentType = response.headers.get('content-type');
     if (contentType && contentType.includes('application/vnd.ms-excel')) {
       return {
@@ -226,7 +226,7 @@ export class Http {
     return this.request(`${getApi}${query}`, {}, headers, config);
   }
 
-  async post(postApi, postData = {}, customeHeaders = {}, config = {}) {
+  async post(postApi, postData = {}, customeHeaders = {}, config = {}, isCycle= false) {
     let headers;
     if (this.isFormData(postData)) {
       headers = {
@@ -248,6 +248,7 @@ export class Http {
       },
       {},
       { loadingState: true, ...config },
+      isCycle
     );
   }
 
@@ -266,7 +267,7 @@ export class Http {
         body: formBody,
       },
       {},
-      { loadingState: true, ...config },
+      { loadingState: true, ...config }
     );
   }
 

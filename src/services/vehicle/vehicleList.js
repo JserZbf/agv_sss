@@ -1,7 +1,7 @@
 import http from '../http';
 
-export const dictPage = (params) => {
-    return http.post('/api/sss-agv-service/Agv/getAll', params);
+export const dictPage = (params, cycleParams) => {
+    return http.post('/api/sss-agv-service/Agv/getAll', params, {}, {} , cycleParams.isCycle);
 };
 
 // 操作 start

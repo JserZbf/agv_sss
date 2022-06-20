@@ -113,7 +113,8 @@ const EditModal = ({
   const [startPositionName, setStartPositionName] = useState('')
   const [endPositionName, setEndPositionName] = useState('')
   const [roadType, setRoadType] = useState('')
-  const [dataSource, setDataSource] = useState([]);
+  const [dataSource, setDataSource] = useState([]); 
+  const [closed, setClosed] = useState(false);
 
   // 初始化可编辑table
   const SortableItem = SortableElement((props) => {
@@ -271,7 +272,8 @@ const EditModal = ({
         ...treeSelectInfo
       })
       treeSelectInfo.roadType &&  setRoadType(treeSelectInfo.roadType)
-      treeSelectInfo.actionList && setDataSource(treeSelectInfo.actionList)
+      treeSelectInfo.actionList && setDataSource(treeSelectInfo.actionList)   
+      setClosed(treeSelectInfo.closed)
     }
   }, [treeSelectInfo, isAdd]);
 
@@ -285,6 +287,7 @@ const EditModal = ({
         ...value,
         agvModelIds: typeof(value.agvModelIds)=='string' ? [value.agvModelIds] : value.agvModelIds,
         mapId: mapId,
+        closed,
         operationsWhenEnd: treeSelectInfo.operationsWhenEnd || [],
         operationsWhenPass: treeSelectInfo.operationsWhenPass || [],
         operationsWhenStart: treeSelectInfo.operationsWhenStart || [],
@@ -388,8 +391,11 @@ const EditModal = ({
             <Form.Item name="positionName" label="名称" rules={[{ required: true }]}>
               <Input placeholder="请输入名称" />
             </Form.Item>
-            <Form.Item name="closed" label="是否关闭" rules={[{ required: true }]}>
+            <Form.Item name="closed" label="是否关闭" rules={[{ required: true }]} tooltip="这里文案">
               <Switch
+                checked= {closed}
+                onChange={(checked)=>{setClosed(checked)}}
+                className='mapDetail_drawerCheckSwitch'
                 checkedChildren={<CheckOutlined />}
                 unCheckedChildren={<CloseOutlined />}
               />
